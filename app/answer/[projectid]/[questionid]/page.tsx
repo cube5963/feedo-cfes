@@ -36,6 +36,19 @@ export default function AnswerQuestionPage() {
     const siteKey = process.env.NEXT_PUBLIC_CF_TURNSTILE_SITE_KEY
 
     useEffect(() => {
+        // 履歴を1つだけにする
+        router.replace(`/answer/${projectId}/${questionId}?answerUUID=${answerUUID}`);
+        // pushStateで履歴を1つに固定
+        window.history.pushState(null, '', window.location.href);
+
+        const handlePopState = () => {
+            router.push('/404');
+        };
+        window.addEventListener('popstate', handlePopState);
+        return () => window.removeEventListener('popstate', handlePopState);
+    }, [projectId, questionId, answerUUID, router]);
+
+    useEffect(() => {
         fetchData();
     }, [projectId, questionId]);
 
@@ -195,6 +208,7 @@ export default function AnswerQuestionPage() {
     };
 
     const handleNext = async () => {
+        /*
         if (!turnstileToken) {
             setError('認証を完了してください')
             return
@@ -206,6 +220,7 @@ export default function AnswerQuestionPage() {
             setTurnstileToken(null);
             return;
         }
+         */
 
         // 現在の回答を保存してから移動
         if (currentSection && answers[currentSection.SectionUUID!] !== undefined) {
@@ -223,6 +238,7 @@ export default function AnswerQuestionPage() {
     const handleComplete = async () => {
         setIsSubmitting(true);
 
+        /*
         if (!turnstileToken) {
             setError('認証を完了してください');
             setIsSubmitting(false);
@@ -236,6 +252,7 @@ export default function AnswerQuestionPage() {
             setIsSubmitting(false);
             return;
         }
+         */
 
         // 最後の回答を保存
         if (currentSection && answers[currentSection.SectionUUID!] !== undefined) {
@@ -380,6 +397,7 @@ export default function AnswerQuestionPage() {
                 </Box>
             </Box>
 
+            {/*
             <Box sx={{px: 3, mb: 1, pb: 12, display: 'flex', justifyContent: 'center'}}>
                 <Turnstile
                     siteKey={siteKey ?? ''}
@@ -388,6 +406,7 @@ export default function AnswerQuestionPage() {
                     style={{width: 180, minHeight: 65}} // 幅を小さめに
                 />
             </Box>
+            */}
 
             <Box
                 sx={{

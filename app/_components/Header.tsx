@@ -1,10 +1,11 @@
 "use client"
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useRouter} from 'next/navigation';
 import {Box, IconButton, Typography, AppBar, Toolbar, Button, Stack} from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import HomeIcon from '@mui/icons-material/Home';
+import {createClient} from "@/utils/supabase/client";
 
 interface HeaderProps {
     title?: string;
@@ -22,6 +23,18 @@ export default function Header({
                                    maxWidth = 1200,
                                }: HeaderProps) {
     const router = useRouter();
+
+    useEffect(() => {
+       const supabase = createClient();
+
+        const accessCount = async () => {
+            const { data, error } = await supabase.from('metrics').select('num').eq('name', 'access').single();
+            const num = Number(data?.num ?? 0);
+            const { error: updateError } = await supabase.from('metrics').update({ num: num + 1 }).eq('name', 'access');
+        };
+
+        accessCount();
+    }, []);
 
     const handleBack = () => {
         if (onBack) {
@@ -95,9 +108,9 @@ export default function Header({
                                     color: '#666'
                                 }}>
                                 for
-                                    <span　style={{
-                                    color: '#84B9CB'
-                                     }}>
+                                    <span style={{
+                                        color: '#84B9CB'
+                                    }}>
                                         蒼穹祭
                                     </span>
                                 </span>

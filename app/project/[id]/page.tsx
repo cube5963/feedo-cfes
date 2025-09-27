@@ -25,6 +25,7 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera'
 import StatisticsTab from '@/app/project/_components/StatisticsTab'
+import {createPersonalClient} from "@/utils/supabase/personalClient";
 
 export default function ProjectPage() {
     const params = useParams()
@@ -267,11 +268,28 @@ export default function ProjectPage() {
 
     // コンポーネントマウント時にフォーム名・メッセージを取得
     useEffect(() => {
-        if (projectId) {
-            fetchFormName()
-            fetchFormMessage()
-        }
-    }, [projectId])
+        const checkSession = async () => {
+            const supabase = createPersonalClient();
+            const {data: sessionData, error: sessionError} = await supabase.auth.getSession();
+
+            if (sessionError) {
+                router.push('/account/signin');
+                return;
+            }
+
+            const currentUser = sessionData?.session?.user;
+            if (!currentUser) {
+                router.push('/account/signin');
+                return;
+            }
+
+            if (projectId) {
+                fetchFormName();
+                fetchFormMessage();
+            }
+        };
+        checkSession();
+    }, [projectId]);
 
     useEffect(() => {
         const fetchImage = async () => {
@@ -435,84 +453,6 @@ export default function ProjectPage() {
                 </Box>
             </Paper>
             {/* プロジェクト設定（デザインのみ） */}
-            <Paper
-                elevation={2}
-                sx={{
-                    p: 4,
-                    mb: 4,
-                    borderRadius: 2,
-                    border: '1px solid #e0e0e0'
-                }}
-            >
-                <Typography variant="subtitle1" sx={{mb: 3, fontWeight: 600}}>
-                    プロジェクト画像
-                </Typography>
-
-                <Box sx={{display: 'flex', alignItems: 'center', gap: 3, mb: 3}}>
-                    <Avatar
-                        src={imageUrl || undefined}
-                        sx={{
-                            width: 80,
-                            height: 80,
-                            bgcolor: 'primary.main'
-                        }}
-                    >
-                        {!imageUrl && <PhotoCameraIcon sx={{fontSize: 40}}/>}
-                    </Avatar>
-
-                    <Box sx={{flex: 1}}>
-                        <Typography variant="body2" color="text.secondary" sx={{mb: 2}}>
-                            プロジェクトのイメージ画像をアップロードできます。
-                            <br/>
-                            対応形式: JPEG、PNG、WebP（最大5MB）
-                        </Typography>
-
-                        <Box sx={{display: 'flex', gap: 1}}>
-                            <Button
-                                variant="outlined"
-                                startIcon={<CloudUploadIcon/>}
-                                size="small"
-                                onClick={() => inputRef.current?.click()}
-                                disabled={uploading}
-                            >
-                                画像を選択
-                            </Button>
-                            <input
-                                type="file"
-                                accept="image/png, image/jpeg, image/webp"
-                                style={{display: 'none'}}
-                                ref={inputRef}
-                                onChange={handleFileChange}
-                            />
-                            <Button
-                                variant="text"
-                                color="error"
-                                size="small"
-                                disabled={!imageUrl || uploading}
-                                onClick={async () => {
-                                    if (!imageUrl) return
-                                    setUploading(true)
-                                    const supabase = createClient()
-                                    // 画像ファイル名を取得
-                                    const {data} = await supabase.storage
-                                        .from('feedo')
-                                        .list(`${projectId}/`, {limit: 1})
-                                    if (data && data.length > 0) {
-                                        await supabase.storage
-                                            .from('feedo')
-                                            .remove([`${projectId}/${data[0].name}`])
-                                    }
-                                    setImageUrl(null)
-                                    setUploading(false)
-                                    setMessage('画像を削除しました')
-                                }}
-                            >
-                                削除
-                            </Button>
-                        </Box>
-                    </Box>
-                </Box>
-            </Paper>
         </Box>
     )
 

@@ -94,6 +94,8 @@ export function SectionEditor({ section, onUpdate }: SectionEditorProps) {
             console.error('データベース保存エラー:', error)
             setLocalSection(section)
         }
+
+        //キャッシュを削除
     }
 
     const handleNameChange = (newName: string) => {

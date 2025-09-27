@@ -184,6 +184,10 @@ export default function FormManager({ initialSections = [], formId, hideFormSele
                 .update(updatedSection)
                 .eq('SectionUUID', sectionId)
 
+            if (currentFormId) {
+                fetch(`/api/sections?projectId=${currentFormId}`, { method: 'DELETE' })
+            }
+
             if (error) {
                 setMessage(`更新に失敗しました: ${error.message}`)
                 throw error

@@ -265,6 +265,7 @@ export default function QuestionComponent({ section, onAnswer, isAnswered = fals
               <Rating
                 value={answer || 0}
                 onChange={(event, newValue) => handleRatingChange(newValue)}
+                min={1}
                 max={maxStars}
                 size="large"
                 sx={{ 
