@@ -1,9 +1,7 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-
 export async function POST(request: Request) {
-    const { token } = await request.json();
+    const {token} = await request.json();
     if (!token) {
-        return new Response(JSON.stringify({ error: 'No token provided' }), { status: 400 });
+        return new Response(JSON.stringify({error: 'No token provided'}), {status: 400});
     }
 
     const secretKey = process.env.CF_TURNSTILE_SECRET_KEY;
@@ -19,6 +17,6 @@ export async function POST(request: Request) {
     });
 
     const data = await response.json();
-    return new Response(JSON.stringify(data), { status: 200 });
+    return new Response(JSON.stringify(data), {status: 200});
 }
 

@@ -2,7 +2,6 @@
 
 import React from 'react';
 import {Box, Button, CircularProgress, IconButton} from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LogoutIcon from '@mui/icons-material/Logout';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
@@ -47,10 +46,10 @@ export default function AnswerNavigationButtons({
                 alignItems: 'center'
             }}>
 
-                <Box sx={{ width: 48 }} />
+                <Box sx={{width: 48}}/>
 
                 {/* 中央のテキスト */}
-                <Box sx={{ minWidth: 140, textAlign: 'center', mx: 'auto' }}>
+                <Box sx={{minWidth: 140, textAlign: 'center', mx: 'auto'}}>
                     {isLastQuestion ? (
                         <Button
                             variant="contained"
@@ -108,7 +107,7 @@ export default function AnswerNavigationButtons({
                         },
                     }}
                 >
-                    <LogoutIcon />
+                    <LogoutIcon/>
                 </IconButton>
             </Box>
         </Box>

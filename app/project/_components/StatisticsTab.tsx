@@ -1093,7 +1093,7 @@ export default function StatisticsTab({projectId}: StatisticsTabProps) {
                                             { id: 0, value: predictCounts[0], label: 'ネガティブ' },
                                             { id: 1, value: predictCounts[1], label: 'ニュートラル' },
                                             { id: 2, value: predictCounts[2], label: 'ポジティブ' }
-                                        ].sort((a, b) => b.value - a.value);;
+                                        ].sort((a, b) => b.value - a.value);
 
                                         //const totalPredicts = predictCounts[0] + predictCounts[1];
                                         const totalPredicts = predictCounts[0] + predictCounts[1] + predictCounts[2];

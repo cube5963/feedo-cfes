@@ -1,20 +1,9 @@
 "use client";
 
-import {
-    Button,
-    AppBar,
-    Toolbar,
-    Box,
-    Typography,
-    Stack,
-    Container,
-    IconButton,
-    Menu,
-    MenuItem
-} from "@mui/material";
+import {AppBar, Box, Button, Container, IconButton, Menu, MenuItem, Stack, Toolbar} from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import {useRouter} from 'next/navigation';
+import {useState} from 'react';
 
 export default function WebNavi() {
     const router = useRouter();
@@ -30,9 +19,9 @@ export default function WebNavi() {
     };
 
     const navigationItems = [
-        { label: '機能', href: '/features' },
-        { label: 'AI作成', href: '/ai' },
-        { label: 'プラン', href: '/plans' }
+        {label: '機能', href: '/features'},
+        {label: 'AI作成', href: '/ai'},
+        {label: 'プラン', href: '/plans'}
     ];
 
     return (
@@ -47,9 +36,9 @@ export default function WebNavi() {
             }}
         >
             <Container maxWidth="lg">
-                <Toolbar sx={{ 
+                <Toolbar sx={{
                     justifyContent: 'space-between',
-                    px: { xs: 0, sm: 2 },
+                    px: {xs: 0, sm: 2},
                     py: 1
                 }}>
                     {/* ロゴ */}
@@ -71,10 +60,10 @@ export default function WebNavi() {
                     </Button>
 
                     {/* デスクトップナビゲーション */}
-                    <Stack 
-                        direction="row" 
+                    <Stack
+                        direction="row"
                         spacing={1}
-                        sx={{ display: { xs: 'none', md: 'flex' } }}
+                        sx={{display: {xs: 'none', md: 'flex'}}}
                     >
                         {navigationItems.map((item, index) => (
                             <Button
@@ -99,12 +88,12 @@ export default function WebNavi() {
                     </Stack>
 
                     {/* 右側のボタン */}
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
                         {/* デスクトップ用ボタン */}
-                        <Stack 
-                            direction="row" 
+                        <Stack
+                            direction="row"
                             spacing={1}
-                            sx={{ display: { xs: 'none', sm: 'flex' } }}
+                            sx={{display: {xs: 'none', sm: 'flex'}}}
                         >
                             <Button
                                 onClick={() => router.push('/account/signin')}
@@ -145,11 +134,11 @@ export default function WebNavi() {
                         <IconButton
                             onClick={handleMenuOpen}
                             sx={{
-                                display: { xs: 'block', md: 'none' },
+                                display: {xs: 'block', md: 'none'},
                                 color: '#000'
                             }}
                         >
-                            <MenuIcon />
+                            <MenuIcon/>
                         </IconButton>
                     </Box>
                 </Toolbar>
@@ -161,7 +150,7 @@ export default function WebNavi() {
                 open={open}
                 onClose={handleMenuClose}
                 sx={{
-                    display: { xs: 'block', md: 'none' },
+                    display: {xs: 'block', md: 'none'},
                     '& .MuiPaper-root': {
                         backgroundColor: 'rgba(255, 255, 255, 0.95)',
                         backdropFilter: 'blur(10px)',
@@ -188,7 +177,7 @@ export default function WebNavi() {
                         {item.label}
                     </MenuItem>
                 ))}
-                <Box sx={{ px: 2, py: 1, borderTop: '1px solid #e0e0e0' }}>
+                <Box sx={{px: 2, py: 1, borderTop: '1px solid #e0e0e0'}}>
                     <Stack spacing={1}>
                         <Button
                             onClick={() => {

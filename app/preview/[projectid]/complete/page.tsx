@@ -1,8 +1,8 @@
 "use client"
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { Box, Typography, CircularProgress, Alert, Button } from "@mui/material";
+import {useEffect, useState} from "react";
+import {useParams, useRouter} from "next/navigation";
+import {Alert, Box, CircularProgress, Typography} from "@mui/material";
 import Header from "@/app/_components/Header";
 import {createAnonClient} from "@/utils/supabase/anonClient";
 
@@ -19,7 +19,7 @@ export default function AnswerCompletePage() {
             setLoading(true);
             try {
                 const supabase = createAnonClient();
-                const { data, error } = await supabase
+                const {data, error} = await supabase
                     .from("Form")
                     .select("FormMessage, FormName")
                     .eq("FormUUID", projectId)
@@ -41,24 +41,40 @@ export default function AnswerCompletePage() {
 
     if (loading) {
         return (
-            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
-                <CircularProgress />
+            <Box sx={{display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh"}}>
+                <CircularProgress/>
             </Box>
         );
     }
     if (error) {
         return (
-            <Box sx={{ maxWidth: 480, mx: "auto", p: 2, minHeight: "100vh", display: "flex", alignItems: "center" }}>
-                <Alert severity="error" sx={{ width: "100%" }}>{error}</Alert>
+            <Box sx={{maxWidth: 480, mx: "auto", p: 2, minHeight: "100vh", display: "flex", alignItems: "center"}}>
+                <Alert severity="error" sx={{width: "100%"}}>{error}</Alert>
             </Box>
         );
     }
 
     return (
-        <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa", display: "flex", flexDirection: "column", maxWidth: 480, mx: "auto", position: "relative" }}>
-            <Header title="アンケート完了" maxWidth={480} showBackButton={false} />
-            <Box sx={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", pt: 10, px: 3 }}>
-                <Typography variant="h5" align="center" sx={{ mb: 3, fontWeight: 600, color: '#333' }}>
+        <Box sx={{
+            minHeight: "100vh",
+            backgroundColor: "#f8f9fa",
+            display: "flex",
+            flexDirection: "column",
+            maxWidth: 480,
+            mx: "auto",
+            position: "relative"
+        }}>
+            <Header title="アンケート完了" maxWidth={480} showBackButton={false}/>
+            <Box sx={{
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                pt: 10,
+                px: 3
+            }}>
+                <Typography variant="h5" align="center" sx={{mb: 3, fontWeight: 600, color: '#333'}}>
                     {formData?.FormMessage ? `${formData.FormMessage}` : "ご協力ありがとうございました！"}
                 </Typography>
             </Box>
