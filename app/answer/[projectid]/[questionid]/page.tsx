@@ -156,17 +156,20 @@ export default function AnswerQuestionPage() {
     // 常に新規回答をinsertする
     const saveAnswer = async (sectionUUID: string, answerData: any) => {
         try {
-            const supabase = createAnonClient() // 回答専用クライアント使用
-            const answerPayload = {
-                FormUUID: projectId,
-                SectionUUID: sectionUUID,
-                AnswerUUID: answerUUID,
-                Answer: JSON.stringify({text: answerData, predict: ""})
-            };
-            const {data, error} = await supabase
-                .from('Answer')
-                .insert([answerPayload])
-                .select();
+            const res = await fetch('/api/answer', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    form_id: projectId,
+                    section_id: sectionUUID,
+                    answer_id: answerUUID,
+                    answer_data: JSON.stringify({text: answerData, predict: ""})
+                })
+            });
+            const result = await res.json();
+            const data = result.data;
+            const error = result.error;
+
             //console.log(data);
             if (error) {
                 console.error('回答保存エラー:', JSON.stringify(error));

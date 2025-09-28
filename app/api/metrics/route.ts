@@ -10,9 +10,13 @@ export async function POST(req: NextRequest) {
         const { data, error } = await supabase.from('metrics').select('num').eq('name', 'access').single();
         const num = Number(data?.num ?? 0);
         const { error: updateError } = await supabase.from('metrics').update({ num: num + 1 }).eq('name', 'access');
+
+        return new Response(JSON.stringify({ data, error }), { status: 200 });
     } else if (type === 'answer') {
         const { data, error } = await supabase.from('metrics').select('num').eq('name', 'answer').single();
         const num = Number(data?.num ?? 0);
         const { error: updateError } = await supabase.from('metrics').update({ num: num + 1 }).eq('name', 'answer');
+
+        return new Response(JSON.stringify({ data, error }), { status: 200 });
     }
 }

@@ -2,13 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getJWTToken } from '@/utils/backend/jwt';
 import { isValidFormId } from "@/utils/valid/formid";
 
-
 export async function GET(req: NextRequest) {
     const projectId = req.nextUrl.searchParams.get('projectId');
     if (!projectId) {
         return NextResponse.json({ error: 'projectId is required' }, { status: 400 } as ResponseInit);
     }
-    if (!isValidFormId(projectId) || !isSafeProjectId(projectId)) {
+    if (!isValidFormId(projectId)) {
         return NextResponse.json({ error: 'Invalid projectId' }, { status: 400 } as ResponseInit);
     }
 
@@ -34,7 +33,7 @@ export async function POST(req: NextRequest) {
     if (!projectId || !sectionsData) {
         return NextResponse.json({ error: 'projectId and sectionsData are required' }, { status: 400 } as ResponseInit);
     }
-    if (!isValidFormId(projectId) || !isSafeProjectId(projectId)) {
+    if (!isValidFormId(projectId)) {
         return NextResponse.json({ error: 'Invalid projectId' }, { status: 400 } as ResponseInit);
     }
 
@@ -56,7 +55,7 @@ export async function DELETE(req: NextRequest) {
     if (!projectId) {
         return NextResponse.json({ error: 'projectId is required' }, { status: 400 } as ResponseInit);
     }
-    if (!isValidFormId(projectId) || !isSafeProjectId(projectId)) {
+    if (!isValidFormId(projectId)) {
         return NextResponse.json({ error: 'Invalid projectId' }, { status: 400 } as ResponseInit);
     }
 
