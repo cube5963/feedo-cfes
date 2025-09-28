@@ -1,20 +1,20 @@
 "use client"
-import { useState, useEffect } from 'react'
-import { Section, FormType, SliderSettings } from './types'
-import { OptionEditor } from './OptionEditor'
-import { StarEditor } from './StarEditor'
-import { SliderEditor } from './SliderEditor'
-import { 
-    TextField,
+import {useEffect, useState} from 'react'
+import {FormType, Section, SliderSettings} from './types'
+import {OptionEditor} from './OptionEditor'
+import {StarEditor} from './StarEditor'
+import {SliderEditor} from './SliderEditor'
+import {
+    Alert,
     Box,
+    Divider,
     FormControl,
     InputLabel,
-    Select,
     MenuItem,
-    Alert,
-    Typography,
     Paper,
-    Divider
+    Select,
+    TextField,
+    Typography
 } from '@mui/material'
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
@@ -55,9 +55,8 @@ export function SectionEditor({ section, onUpdate }: SectionEditorProps) {
                 
                 // JSONかどうかをチェック
                 if (jsonString.startsWith('{') && jsonString.endsWith('}')) {
-                    const result = JSON.parse(jsonString)
                     //console.log('JSON解析成功:', result)
-                    return result
+                    return JSON.parse(jsonString)
                 }
                 
                 // JSONでない場合は空オブジェクトを返す

@@ -1,19 +1,19 @@
 "use client"
 
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
+    Alert,
     Box,
-    Typography,
-    Paper,
+    Button,
     Card,
     CardContent,
-    CircularProgress,
-    Alert,
-    Divider,
     Chip,
+    CircularProgress,
+    Divider,
     IconButton,
-    Button,
-    Tooltip
+    Paper,
+    Tooltip,
+    Typography
 } from '@mui/material';
 import {PieChart} from '@mui/x-charts/PieChart';
 import {BarChart} from '@mui/x-charts/BarChart';
@@ -172,15 +172,13 @@ export default function StatisticsTab({projectId}: StatisticsTabProps) {
                     });
                 });
 
-                const updatedStats = {
+                return {
                     ...prev,
                     totalResponses: totalUniqueResponders.size,
                     responseRate: prev.totalQuestions > 0 ?
                         (updatedQuestionStats.reduce((sum, q) => sum + q.responseCount, 0) / prev.totalQuestions) : 0,
                     questionStats: updatedQuestionStats
                 };
-
-                return updatedStats;
             });
 
             // セクション個別の最終更新時刻を記録
@@ -353,15 +351,13 @@ export default function StatisticsTab({projectId}: StatisticsTabProps) {
                     });
                 });
 
-                const updatedStats = {
+                return {
                     ...prev,
                     totalResponses: totalUniqueResponders.size,
                     responseRate: prev.totalQuestions > 0 ?
                         (updatedQuestionStats.reduce((sum, q) => sum + q.responseCount, 0) / prev.totalQuestions) : 0,
                     questionStats: updatedQuestionStats
                 };
-
-                return updatedStats;
             });
 
             // セクション個別の最終更新時刻を記録

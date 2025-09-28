@@ -37,7 +37,7 @@ export default function Project() {
             let date: Date;
 
             // 数値の場合（Unix timestamp）
-            if (typeof dateString === 'number' || /^\d+$/.test(String(dateString))) {
+            if (!isNaN(Number(dateString)) || /^\d+$/.test(String(dateString))) {
                 const timestamp = Number(dateString);
                 // 秒単位のUnix timestampの場合（桁数が少ない）
                 if (timestamp < 10000000000) {

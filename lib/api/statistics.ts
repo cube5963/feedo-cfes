@@ -1,4 +1,4 @@
-import { createClient } from '@/utils/supabase/server';
+import {createClient} from '@/utils/supabase/server';
 
 /**
  * 統計計算API
@@ -63,8 +63,7 @@ export async function getFormStatistics(projectId: string): Promise<FormStatisti
   const statistics: Record<string, SectionStatistics> = {};
   
   for (const section of sections || []) {
-    const sectionStats = await calculateSectionStatistics(projectId, section.SectionUUID);
-    statistics[section.SectionUUID] = sectionStats;
+      statistics[section.SectionUUID] = await calculateSectionStatistics(projectId, section.SectionUUID);
   }
 
   return {

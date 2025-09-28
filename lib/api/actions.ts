@@ -1,13 +1,13 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
-import { supabaseAPI } from './supabase';
+import {revalidatePath} from 'next/cache';
+import {supabaseAPI} from './supabase';
 import type {
-  CreateSurveyInput,
-  UpdateSurveyInput,
-  CreateQuestionInput,
-  UpdateQuestionInput,
-  CreateAnswerInput
+    CreateAnswerInput,
+    CreateQuestionInput,
+    CreateSurveyInput,
+    UpdateQuestionInput,
+    UpdateSurveyInput
 } from './types';
 
 /**
@@ -172,8 +172,7 @@ export async function deleteQuestionAction(id: string, surveyId?: string) {
 // Answer Actions
 export async function saveAnswerAction(input: CreateAnswerInput) {
   try {
-    const response = await supabaseAPI.saveAnswer(input, true);
-    return response;
+      return await supabaseAPI.saveAnswer(input, true);
   } catch (error) {
     return {
       success: false,
@@ -263,8 +262,7 @@ export async function getSurveyWithQuestionsAction(surveyId: string) {
 
 export async function getSurveyStatsAction(surveyId: string) {
   try {
-    const response = await supabaseAPI.getSurveyStats(surveyId, true);
-    return response;
+      return await supabaseAPI.getSurveyStats(surveyId, true);
   } catch (error) {
     return {
       success: false,
