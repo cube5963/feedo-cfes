@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
     if (!projectId) {
         return NextResponse.json({ error: 'projectId is required' }, { status: 400 } as ResponseInit);
     }
-    if (!isValidFormId(projectId)) {
+    if (!isValidFormId(projectId) || !isSafeProjectId(projectId)) {
         return NextResponse.json({ error: 'Invalid projectId' }, { status: 400 } as ResponseInit);
     }
 
@@ -56,7 +56,7 @@ export async function DELETE(req: NextRequest) {
     if (!projectId) {
         return NextResponse.json({ error: 'projectId is required' }, { status: 400 } as ResponseInit);
     }
-    if (!isValidFormId(projectId)) {
+    if (!isValidFormId(projectId) || !isSafeProjectId(projectId)) {
         return NextResponse.json({ error: 'Invalid projectId' }, { status: 400 } as ResponseInit);
     }
 
