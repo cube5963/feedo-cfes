@@ -2,10 +2,9 @@
 
 import React, {useEffect} from 'react';
 import {useRouter} from 'next/navigation';
-import {Box, IconButton, Typography, AppBar, Toolbar, Button, Stack} from '@mui/material';
+import {AppBar, Box, Button, IconButton, Toolbar, Typography} from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import HomeIcon from '@mui/icons-material/Home';
-import {createClient} from "@/utils/supabase/client";
 
 interface HeaderProps {
     title?: string;
@@ -25,12 +24,13 @@ export default function Header({
     const router = useRouter();
 
     useEffect(() => {
-       const supabase = createClient();
 
         const accessCount = async () => {
-            const { data, error } = await supabase.from('metrics').select('num').eq('name', 'access').single();
-            const num = Number(data?.num ?? 0);
-            const { error: updateError } = await supabase.from('metrics').update({ num: num + 1 }).eq('name', 'access');
+            await fetch('/api/metrics', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({type: 'access'})
+            });
         };
 
         accessCount();

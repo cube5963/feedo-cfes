@@ -22,7 +22,7 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import {createClient} from '@/utils/supabase/client';
+import {createAnonClient} from '@/utils/supabase/anonClient';
 import {Section} from '@/app/_components/forms/types';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import PeopleIcon from '@mui/icons-material/People';
@@ -60,7 +60,7 @@ export default function StatisticsTab({projectId}: StatisticsTabProps) {
 
     // Supabase Realtimeを使用したリアルタイム統計更新
     useEffect(() => {
-        const supabase = createClient();
+        const supabase = createAnonClient();
         let channel: any = null;
 
         const setupRealtimeSubscription = () => {
@@ -124,7 +124,7 @@ export default function StatisticsTab({projectId}: StatisticsTabProps) {
     const updateStatisticsInstantly = useCallback(async (sectionUUID: string, eventType: string, record: any) => {
 
         try {
-            const supabase = createClient();
+            const supabase = createAnonClient();
 
             // 最新の回答データを取得（効率的にセクション単位で取得）
             const { data: responses, error } = await supabase
@@ -287,7 +287,7 @@ export default function StatisticsTab({projectId}: StatisticsTabProps) {
         setSectionRefreshing(prev => ({...prev, [sectionUUID]: true}));
 
         try {
-            const supabase = createClient();
+            const supabase = createAnonClient();
 
             // 現在の統計から該当セクションの情報を取得
             let section: Section | undefined;
@@ -388,7 +388,7 @@ export default function StatisticsTab({projectId}: StatisticsTabProps) {
     const fetchStatistics = async () => {
         try {
             setLoading(true);
-            const supabase = createClient();
+            const supabase = createAnonClient();
 
             // セクション一覧を取得
             const {data: sections, error: sectionsError} = await supabase

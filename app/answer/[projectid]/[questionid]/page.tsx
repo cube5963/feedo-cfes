@@ -3,13 +3,13 @@
 import React, {useEffect, useState} from 'react';
 import {useParams, useRouter} from 'next/navigation';
 import {Alert, Box, CircularProgress, Typography} from '@mui/material';
-import {createAnswerClient} from '@/utils/supabase/answerClient';
 import {Section} from '@/app/_components/forms/types';
 import QuestionComponent from '@/app/preview/_components/QuestionComponent';
 import ProgressBar from '@/app/preview/_components/ProgressBar';
 import AnswerNavigationButtons from '@/app/answer/_components/AnswerNavigationButtons';
 import Header from '@/app/_components/Header';
 import {Turnstile} from '@marsidev/react-turnstile';
+import {createAnonClient} from "@/utils/supabase/anonClient";
 
 interface FormData {
     FormUUID: string;
@@ -67,8 +67,8 @@ export default function AnswerQuestionPage() {
     const verifyTurnstile = async (token: string) => {
         const res = await fetch('/api/verify-turnstile', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token }),
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({token}),
         });
         const data = await res.json();
         return data.success;
@@ -77,7 +77,7 @@ export default function AnswerQuestionPage() {
     const fetchData = async () => {
         try {
             setLoading(true);
-            const supabase = createAnswerClient(); // 回答専用クライアント使用
+            const supabase = createAnonClient() // 回答専用クライアント使用
 
             // フォーム情報を取得
             const {data: formData, error: formError} = await supabase
@@ -156,7 +156,7 @@ export default function AnswerQuestionPage() {
     // 常に新規回答をinsertする
     const saveAnswer = async (sectionUUID: string, answerData: any) => {
         try {
-            const supabase = createAnswerClient(); // 回答専用クライアント使用
+            const supabase = createAnonClient() // 回答専用クライアント使用
             const answerPayload = {
                 FormUUID: projectId,
                 SectionUUID: sectionUUID,

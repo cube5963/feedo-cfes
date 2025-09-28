@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
-
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const metadata: Metadata = {
   title: "FEEDO",
@@ -24,6 +24,7 @@ export default function RootLayout({
           }}>
         <AppRouterCacheProvider>
             {children}
+            <SpeedInsights />
         </AppRouterCacheProvider>
       </body>
     </html>

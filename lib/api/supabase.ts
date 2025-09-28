@@ -1,4 +1,4 @@
-import { createClient as createBrowserClient } from '@/utils/supabase/client';
+import { createAnonClient as createBrowserClient } from '@/utils/supabase/anonClient';
 import { createClient as createServerClient } from '@/utils/supabase/server';
 import type {
   Survey,

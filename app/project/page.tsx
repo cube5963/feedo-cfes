@@ -3,7 +3,7 @@
 import {Avatar, Box, Button, Card, CardContent, IconButton, Typography,} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {useRouter} from 'next/navigation'; // App Router 用
-import {createPersonalClient} from '@/utils/supabase/personalClient'
+import {createAnonClient} from '@/utils/supabase/anonClient'
 import Header from '@/app/_components/Header'
 import {useEffect, useState} from 'react';
 
@@ -64,7 +64,7 @@ export default function Project() {
     const fixAIFormDates = async (formsToFix: any[]) => {
         if (!user || formsToFix.length === 0) return;
 
-        const supabase = createPersonalClient();
+        const supabase = createAnonClient();
         const now = new Date().toISOString();
 
         for (const form of formsToFix) {
@@ -93,7 +93,7 @@ export default function Project() {
     useEffect(() => {
         const checkUserAndFetchForms = async () => {
             try {
-                const supabase = createPersonalClient(); // 個人用クライアント使用
+                const supabase = createAnonClient(); // 個人用クライアント使用
 
                 // 現在のセッション確認
                 const {data: sessionData, error: sessionError} = await supabase.auth.getSession();
@@ -184,7 +184,7 @@ export default function Project() {
         setLoading(true);
 
         try {
-            const supabase = createPersonalClient(); // 個人用クライアント使用
+            const supabase = createAnonClient(); // 個人用クライアント使用
 
             // 新しいフォームを作成（UserIDと日時を設定）
             const currentTime = new Date().toISOString(); // ISO 8601形式の現在日時
@@ -236,7 +236,7 @@ export default function Project() {
         setLoading(true);
 
         try {
-            const supabase = createPersonalClient(); // 個人用クライアント使用
+            const supabase = createAnonClient(); // 個人用クライアント使用
 
             // フォームの所有者確認（念のため）
             const {data: formCheck, error: checkError} = await supabase

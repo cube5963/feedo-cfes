@@ -1,8 +1,8 @@
 "use client";
 import {Alert, Box, Button, Paper, TextField, Typography} from "@mui/material";
-import {createClient} from "@/utils/supabase/client";
 import React, {useEffect, useState} from 'react';
 import Header from "@/app/_components/Header";
+import {createAnonClient} from "@/utils/supabase/anonClient";
 
 export default function SignIn() {
     const [formValues, setFormValues] = useState({
@@ -14,7 +14,7 @@ export default function SignIn() {
 
     useEffect(() => {
         const checkAuth = async () => {
-            const supabase = createClient();
+            const supabase = createAnonClient();
             const {data} = await supabase.auth.getUser();
             if (data.user) {
                 window.location.href = '/project';
@@ -35,7 +35,7 @@ export default function SignIn() {
             return;
         }
 
-        const supabase = createClient();
+        const supabase = createAnonClient();
         const {data, error} = await supabase.auth.signInWithPassword({
             email,
             password,
@@ -53,7 +53,7 @@ export default function SignIn() {
         e.preventDefault();
         setError(null);
 
-        const supabase = createClient();
+        const supabase = createAnonClient();
         const {data, error} = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {

@@ -3,8 +3,8 @@
 import {useEffect, useState} from "react";
 import {useParams, useRouter} from "next/navigation";
 import {Alert, Box, CircularProgress, Typography} from "@mui/material";
-import {createAnswerClient} from "@/utils/supabase/answerClient";
 import Header from "@/app/_components/Header";
+import {createAnonClient} from "@/utils/supabase/anonClient";
 
 export default function AnswerCompletePage() {
     const params = useParams();
@@ -18,7 +18,7 @@ export default function AnswerCompletePage() {
         const fetchForm = async () => {
             setLoading(true);
             try {
-                const supabase = createAnswerClient();
+                const supabase = createAnonClient();
                 const {data, error} = await supabase
                     .from("Form")
                     .select("FormMessage, FormName")
@@ -38,10 +38,11 @@ export default function AnswerCompletePage() {
         };
 
         const accessCount = async () => {
-            const supabase = createAnswerClient();
-            const { data, error } = await supabase.from('metrics').select('num').eq('name', 'answer').single();
-            const num = Number(data?.num ?? 0);
-            const { error: updateError } = await supabase.from('metrics').update({ num: num + 1 }).eq('name', 'answer');
+            await fetch('/api/metrics', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ type: 'answer' })
+            });
         };
 
         if (projectId) fetchForm();

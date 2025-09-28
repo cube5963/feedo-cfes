@@ -3,12 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Box, Typography, Container, Alert, CircularProgress } from '@mui/material';
-import { createClient } from '@/utils/supabase/client';
 import { Section } from '@/app/_components/forms/types';
 import QuestionComponent from '@/app/preview/_components/QuestionComponent';
 import ProgressBar from '@/app/preview/_components/ProgressBar';
 import NavigationButtons from '@/app/preview/_components/NavigationButtons';
 import Header from '@/app/_components/Header';
+import {createAnonClient} from "@/utils/supabase/anonClient";
 
 interface FormData {
   FormUUID: string;
@@ -36,7 +36,7 @@ export default function PreviewQuestionPage() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const supabase = createClient();
+      const supabase = createAnonClient();
 
       // フォーム情報を取得
       const { data: formData, error: formError } = await supabase

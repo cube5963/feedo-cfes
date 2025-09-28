@@ -1,23 +1,15 @@
 "use client"
-import { useState, useEffect, useRef } from 'react'
-import { useRouter } from 'next/navigation'
-import { createClient } from '@/utils/supabase/client'
-import { FormProps, Section } from './types'
-import { FormSelector } from './FormSelector'
-import { SectionCreator, SectionCreatorRef } from './SectionCreator'
-import { SectionList } from './SectionList'
-import { arrayMove } from '@dnd-kit/sortable'
-import { 
-    Box, 
-    Alert, 
-    Card,
-    CardContent,
-    Typography,
-    Button
-} from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
+import {useEffect, useRef, useState} from 'react'
+import {useRouter} from 'next/navigation'
+import {FormProps, Section} from './types'
+import {FormSelector} from './FormSelector'
+import {SectionCreator, SectionCreatorRef} from './SectionCreator'
+import {SectionList} from './SectionList'
+import {arrayMove} from '@dnd-kit/sortable'
+import {Alert, Box} from '@mui/material'
+import {createAnonClient} from "@/utils/supabase/anonClient";
 
-export default function FormManager({ initialSections = [], formId, hideFormSelector = false }: FormProps) {
+export default function FormManager({initialSections = [], formId, hideFormSelector = false}: FormProps) {
     const router = useRouter()
     const sectionCreatorRef = useRef<SectionCreatorRef>(null)
     const [sections, setSections] = useState<Section[]>(initialSections)
@@ -29,29 +21,29 @@ export default function FormManager({ initialSections = [], formId, hideFormSele
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const supabase = createClient()
-                
-                const { data: formData, error: formError } = await supabase
+                const supabase = createAnonClient()
+
+                const {data: formData, error: formError} = await supabase
                     .from('Form')
                     .select('FormUUID, FormName')
                     .eq('Delete', false)
-                    .order('CreatedAt', { ascending: false })
-                
+                    .order('CreatedAt', {ascending: false})
+
                 if (formError) {
                     setMessage('Formテーブルの取得に失敗しました')
                     return
                 }
-                
+
                 if (formData && formData.length > 0) {
                     const formIds = formData.map(form => form.FormUUID)
                     setAvailableFormIds(formIds)
-                    
+
                     if (!currentFormId || !formIds.includes(currentFormId)) {
                         setCurrentFormId(formIds[0])
                     }
                 } else {
-                    
-                    const { data: newForm, error: createError } = await supabase
+
+                    const {data: newForm, error: createError} = await supabase
                         .from('Form')
                         .insert([{
                             FormName: 'デフォルトフォーム',
@@ -60,28 +52,28 @@ export default function FormManager({ initialSections = [], formId, hideFormSele
                         }])
                         .select()
                         .single()
-                    
+
                     if (createError) {
                         setMessage('フォームの作成に失敗しました。手動でFormテーブルにデータを追加してください。')
                         return
                     }
-                    
+
                     if (newForm) {
                         setAvailableFormIds([newForm.FormUUID])
                         setCurrentFormId(newForm.FormUUID)
                         setMessage('デフォルトフォームを自動作成しました。')
                     }
                 }
-                
+
                 const formIdToUse = currentFormId || (formData.length > 0 ? formData[0].FormUUID : null)
                 if (formIdToUse) {
-                    const { data: sectionData, error: sectionError } = await supabase
+                    const {data: sectionData, error: sectionError} = await supabase
                         .from('Section')
                         .select('*')
                         .eq('FormUUID', formIdToUse)
                         .eq('Delete', false)
-                        .order('SectionOrder', { ascending: true })
-                    
+                        .order('SectionOrder', {ascending: true})
+
                     if (sectionError) {
                         setMessage(`Sectionデータの取得に失敗しました: ${sectionError.message}`)
                     } else {
@@ -92,7 +84,7 @@ export default function FormManager({ initialSections = [], formId, hideFormSele
                 setMessage(`データベース接続エラー: ${error?.message || 'Unknown error'}`)
             }
         }
-        
+
         fetchData()
     }, [currentFormId])
 
@@ -101,15 +93,15 @@ export default function FormManager({ initialSections = [], formId, hideFormSele
         setMessage('')
 
         try {
-            const supabase = createClient()
+            const supabase = createAnonClient()
 
-            const { data, error } = await supabase
+            const {data, error} = await supabase
                 .from('Section')
                 .insert([sectionData])
                 .select()
 
             if (error) {
-                
+
                 if (error.code === '23503') {
                     setMessage(`外部キー制約エラー: FormID ${currentFormId} が見つかりません。`)
                 } else if (error.code === '42501' || error.message.includes('RLS')) {
@@ -122,14 +114,14 @@ export default function FormManager({ initialSections = [], formId, hideFormSele
 
             if (data && data.length > 0) {
                 const newSection = data[0]
-                
+
                 setSections(prev => [...prev, newSection])
                 setMessage('質問が正常に保存されました')
 
                 if (currentFormId) {
-                    fetch(`/api/sections?projectId=${currentFormId}`, { method: 'DELETE' })
+                    fetch(`/api/sections?projectId=${currentFormId}`, {method: 'DELETE'})
                 }
-                
+
                 // SectionCreatorをリセット
                 if (sectionCreatorRef.current?.resetForm) {
                     sectionCreatorRef.current.resetForm()
@@ -152,11 +144,11 @@ export default function FormManager({ initialSections = [], formId, hideFormSele
         setMessage('')
 
         try {
-            const supabase = createClient()
+            const supabase = createAnonClient()
 
-            const { error } = await supabase
+            const {error} = await supabase
                 .from('Section')
-                .update({ Delete: true, UpdatedAt: new Date().toISOString() })
+                .update({Delete: true, UpdatedAt: new Date().toISOString()})
                 .eq('SectionUUID', sectionId)
                 .eq('Delete', false)
 
@@ -167,7 +159,7 @@ export default function FormManager({ initialSections = [], formId, hideFormSele
 
             setSections(prev => prev.filter(section => section.SectionUUID !== sectionId))
             setMessage('質問が正常に削除されました')
-            
+
         } catch (error: any) {
             setMessage(`セクションの削除に失敗しました: ${error?.message || 'Unknown error'}`)
         } finally {
@@ -177,15 +169,15 @@ export default function FormManager({ initialSections = [], formId, hideFormSele
 
     const handleUpdateSection = async (sectionId: string, updatedSection: Partial<Section>) => {
         try {
-            const supabase = createClient()
+            const supabase = createAnonClient()
 
-            const { error } = await supabase
+            const {error} = await supabase
                 .from('Section')
                 .update(updatedSection)
                 .eq('SectionUUID', sectionId)
 
             if (currentFormId) {
-                fetch(`/api/sections?projectId=${currentFormId}`, { method: 'DELETE' })
+                fetch(`/api/sections?projectId=${currentFormId}`, {method: 'DELETE'})
             }
 
             if (error) {
@@ -193,14 +185,14 @@ export default function FormManager({ initialSections = [], formId, hideFormSele
                 throw error
             }
 
-            setSections(prev => prev.map(section => 
-                section.SectionUUID === sectionId 
-                    ? { ...section, ...updatedSection }
+            setSections(prev => prev.map(section =>
+                section.SectionUUID === sectionId
+                    ? {...section, ...updatedSection}
                     : section
             ))
-            
+
             await new Promise(resolve => setTimeout(resolve, 100))
-            
+
         } catch (error: any) {
             setMessage(`セクションの更新に失敗しました: ${error?.message || 'Unknown error'}`)
             throw error
@@ -208,33 +200,33 @@ export default function FormManager({ initialSections = [], formId, hideFormSele
     }
 
     const handleDragEnd = async (event: any) => {
-        const { active, over } = event
+        const {active, over} = event
 
         if (active.id !== over.id) {
             const oldIndex = sections.findIndex(section => section.SectionUUID === active.id)
             const newIndex = sections.findIndex(section => section.SectionUUID === over.id)
-            
+
             const newSections = arrayMove(sections, oldIndex, newIndex)
-            
+
             const updatedSections = newSections.map((section, index) => ({
                 ...section,
                 SectionOrder: index + 1
             }))
-            
+
             setSections(updatedSections)
-            
+
             try {
-                const supabase = createClient()
-                
+                const supabase = createAnonClient()
+
                 for (const section of updatedSections) {
                     await supabase
                         .from('Section')
-                        .update({ SectionOrder: section.SectionOrder })
+                        .update({SectionOrder: section.SectionOrder})
                         .eq('SectionUUID', section.SectionUUID)
                 }
 
                 if (currentFormId) {
-                    fetch(`/api/sections?projectId=${currentFormId}`, { method: 'DELETE' })
+                    fetch(`/api/sections?projectId=${currentFormId}`, {method: 'DELETE'})
                 }
 
                 setMessage('質問の順序を更新しました')
@@ -249,9 +241,9 @@ export default function FormManager({ initialSections = [], formId, hideFormSele
         setMessage('')
 
         try {
-            const supabase = createClient()
-            
-            const { data: newForm, error: createError } = await supabase
+            const supabase = createAnonClient()
+
+            const {data: newForm, error: createError} = await supabase
                 .from('Form')
                 .insert([{
                     FormName: `新しいフォーム ${new Date().toLocaleString('ja-JP')}`,
@@ -260,12 +252,12 @@ export default function FormManager({ initialSections = [], formId, hideFormSele
                 }])
                 .select()
                 .single()
-            
+
             if (createError) {
                 setMessage(`フォームの作成に失敗しました: ${createError.message}`)
                 return
             }
-            
+
             if (newForm) {
                 router.push(`/project/${newForm.FormUUID}`)
             }
@@ -275,20 +267,20 @@ export default function FormManager({ initialSections = [], formId, hideFormSele
             setLoading(false)
         }
     }
-    
+
     return (
-        <Box sx={{ 
+        <Box sx={{
             width: '100%',
             position: 'relative'
         }}>
             {message && (
-                <Alert severity={message.includes('失敗') ? 'error' : 'success'} sx={{ mb: 2 }}>
+                <Alert severity={message.includes('失敗') ? 'error' : 'success'} sx={{mb: 2}}>
                     {message}
                 </Alert>
             )}
-            
+
             {!hideFormSelector && (
-                <FormSelector 
+                <FormSelector
                     availableFormIds={availableFormIds}
                     currentFormId={currentFormId}
                     onFormChange={setCurrentFormId}
@@ -298,7 +290,7 @@ export default function FormManager({ initialSections = [], formId, hideFormSele
             )}
 
             {/* 質問一覧を上に移動 */}
-            <SectionList 
+            <SectionList
                 sections={sections}
                 currentFormId={currentFormId}
                 onDelete={handleDeleteSection}
@@ -307,8 +299,8 @@ export default function FormManager({ initialSections = [], formId, hideFormSele
             />
 
             {/* 新しい質問作成 */}
-            <Box sx={{ mt: 3 }} id="new-question-card">
-                <SectionCreator 
+            <Box sx={{mt: 3}} id="new-question-card">
+                <SectionCreator
                     ref={sectionCreatorRef}
                     currentFormId={currentFormId}
                     onSave={handleSaveSection}

@@ -1,12 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getJWTToken } from '@/utils/backend/jwt';
+import { isValidFormId } from "@/utils/valid/formid";
+
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 
 export async function GET(req: NextRequest) {
     const projectId = req.nextUrl.searchParams.get('projectId');
     if (!projectId) {
         return NextResponse.json({ error: 'projectId is required' }, { status: 400 } as ResponseInit);
     }
+    if (!isValidFormId(projectId)) {
+        return NextResponse.json({ error: 'Invalid projectId' }, { status: 400 } as ResponseInit);
+    }
+
     const cachekey = `sections:${projectId}`;
     const res = await fetch(`${process.env.REDIS_URL}/GET/${cachekey}`, {
         headers: {
@@ -29,6 +36,10 @@ export async function POST(req: NextRequest) {
     if (!projectId || !sectionsData) {
         return NextResponse.json({ error: 'projectId and sectionsData are required' }, { status: 400 } as ResponseInit);
     }
+    if (!isValidFormId(projectId)) {
+        return NextResponse.json({ error: 'Invalid projectId' }, { status: 400 } as ResponseInit);
+    }
+
     const cachekey = `sections:${projectId}`;
     const res = await fetch(
         `${process.env.REDIS_URL}/SETEX/${cachekey}/3600/${encodeURIComponent(JSON.stringify(sectionsData))}`,
@@ -47,6 +58,10 @@ export async function DELETE(req: NextRequest) {
     if (!projectId) {
         return NextResponse.json({ error: 'projectId is required' }, { status: 400 } as ResponseInit);
     }
+    if (!isValidFormId(projectId)) {
+        return NextResponse.json({ error: 'Invalid projectId' }, { status: 400 } as ResponseInit);
+    }
+
     const cachekey = `sections:${projectId}`;
     const res = await fetch(
         `${process.env.REDIS_URL}/DEL/${cachekey}`,

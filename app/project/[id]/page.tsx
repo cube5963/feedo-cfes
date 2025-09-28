@@ -4,7 +4,6 @@ import {useEffect, useRef, useState} from 'react'
 import FormComponent from '@/app/_components/form'
 import {
     Alert,
-    Avatar,
     Box,
     Button,
     Divider,
@@ -16,16 +15,13 @@ import {
     TextField,
     Typography
 } from '@mui/material'
-import {createClient} from '@/utils/supabase/client'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import Header from '@/app/_components/Header'
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer'
 import BarChartIcon from '@mui/icons-material/BarChart'
 import SettingsIcon from '@mui/icons-material/Settings'
-import CloudUploadIcon from '@mui/icons-material/CloudUpload'
-import PhotoCameraIcon from '@mui/icons-material/PhotoCamera'
 import StatisticsTab from '@/app/project/_components/StatisticsTab'
-import {createPersonalClient} from "@/utils/supabase/personalClient";
+import {createAnonClient} from "@/utils/supabase/anonClient";
 
 export default function ProjectPage() {
     const params = useParams()
@@ -40,7 +36,7 @@ export default function ProjectPage() {
     // フォーム終了メッセージを取得する関数
     const fetchFormMessage = async () => {
         try {
-            const supabase = createClient()
+            const supabase = createAnonClient()
             const {data, error} = await supabase
                 .from('Form')
                 .select('FormMessage')
@@ -62,7 +58,7 @@ export default function ProjectPage() {
     const updateFormMessage = async (newFormMessage: string) => {
         setLoading(true)
         try {
-            const supabase = createClient()
+            const supabase = createAnonClient()
             const {error} = await supabase
                 .from('Form')
                 .update({FormMessage: newFormMessage, UpdatedAt: new Date().toISOString()})
@@ -95,7 +91,7 @@ export default function ProjectPage() {
     // アンケート回答ページに移動する関数
     const handleAnswer = async () => {
         try {
-            const supabase = createClient()
+            const supabase = createAnonClient()
 
             // 最初の質問を取得
             const {data: sections, error} = await supabase
@@ -122,7 +118,7 @@ export default function ProjectPage() {
     // プレビューページに移動する関数
     const handlePreview = async () => {
         try {
-            const supabase = createClient()
+            const supabase = createAnonClient()
 
             // 最初の質問を取得
             const {data: sections, error} = await supabase
@@ -150,7 +146,7 @@ export default function ProjectPage() {
     // フォーム名を取得する関数
     const fetchFormName = async () => {
         try {
-            const supabase = createClient()
+            const supabase = createAnonClient()
             const {data, error} = await supabase
                 .from('Form')
                 .select('FormName')
@@ -177,7 +173,7 @@ export default function ProjectPage() {
 
         setLoading(true)
         try {
-            const supabase = createClient()
+            const supabase = createAnonClient()
             const {error} = await supabase
                 .from('Form')
                 .update({FormName: newFormName, UpdatedAt: new Date().toISOString()})
@@ -245,7 +241,7 @@ export default function ProjectPage() {
             canvas.toBlob((b) => resolve(b!), file.type)
         )
 
-        const supabase = createClient()
+        const supabase = createAnonClient()
         const filePath = `feedo/${projectId}/${file.name}`
 
         const {error} = await supabase.storage
@@ -269,7 +265,7 @@ export default function ProjectPage() {
     // コンポーネントマウント時にフォーム名・メッセージを取得
     useEffect(() => {
         const checkSession = async () => {
-            const supabase = createPersonalClient();
+            const supabase = createAnonClient();
             const {data: sessionData, error: sessionError} = await supabase.auth.getSession();
 
             if (sessionError) {
@@ -293,7 +289,7 @@ export default function ProjectPage() {
 
     useEffect(() => {
         const fetchImage = async () => {
-            const supabase = createClient()
+            const supabase = createAnonClient()
             // 画像ファイル名が分かっている場合は指定、なければリスト取得
             const {data, error} = await supabase.storage
                 .from('feedo')
@@ -369,7 +365,7 @@ export default function ProjectPage() {
                         startIcon={<QuestionAnswerIcon/>}
                         onClick={async () => {
                             try {
-                                const supabase = createClient()
+                                const supabase = createAnonClient()
 
                                 // 最初の質問を取得
                                 const {data: sections, error} = await supabase
