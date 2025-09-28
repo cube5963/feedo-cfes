@@ -34,11 +34,13 @@ export function OptionEditor({ options, onUpdate, onSave, sectionType }: OptionE
         if (options.length < maxOptions) {
             const newOptions = [...options, '']
             onUpdate(newOptions)
-            
+
+            /*
             const newDesc = JSON.stringify({ 
                 options: newOptions.filter(opt => opt.trim() !== '') 
             })
             await onSave(newDesc)
+             */
         }
     }
 
@@ -46,11 +48,13 @@ export function OptionEditor({ options, onUpdate, onSave, sectionType }: OptionE
         if (options.length > minOptions) {
             const newOptions = options.filter((_, i) => i !== index)
             onUpdate(newOptions)
-            
+
+            /*
             const newDesc = JSON.stringify({ 
                 options: newOptions.filter(opt => opt.trim() !== '') 
             })
             await onSave(newDesc)
+             */
         }
     }
 

@@ -38,10 +38,12 @@ export default function AnswerCompletePage() {
         };
 
         const accessCount = async () => {
+            const supabase = createAnswerClient();
             const { data, error } = await supabase.from('metrics').select('num').eq('name', 'answer').single();
             const num = Number(data?.num ?? 0);
             const { error: updateError } = await supabase.from('metrics').update({ num: num + 1 }).eq('name', 'answer');
         };
+
         if (projectId) fetchForm();
         accessCount();
     }, [projectId]);

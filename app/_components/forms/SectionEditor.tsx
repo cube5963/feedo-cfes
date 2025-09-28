@@ -45,23 +45,23 @@ export function SectionEditor({ section, onUpdate }: SectionEditorProps) {
         // SectionDescを安全に解析する関数
         const parseJsonSafely = (jsonString: string) => {
             try {
-                console.log('解析しようとするJSON文字列:', JSON.stringify(jsonString))
+                //console.log('解析しようとするJSON文字列:', JSON.stringify(jsonString))
                 
                 // 空文字列や無効な文字列の場合のチェック
                 if (!jsonString || jsonString.trim() === '' || jsonString.trim() === '{}') {
-                    console.log('空のJSON文字列、デフォルト値を使用')
+                    //console.log('空のJSON文字列、デフォルト値を使用')
                     return {}
                 }
                 
                 // JSONかどうかをチェック
                 if (jsonString.startsWith('{') && jsonString.endsWith('}')) {
                     const result = JSON.parse(jsonString)
-                    console.log('JSON解析成功:', result)
+                    //console.log('JSON解析成功:', result)
                     return result
                 }
                 
                 // JSONでない場合は空オブジェクトを返す
-                console.log('JSON形式ではない、空オブジェクトを返す')
+                //console.log('JSON形式ではない、空オブジェクトを返す')
                 return {}
             } catch (error) {
                 console.warn('JSON解析エラー、デフォルト値を使用:', error)

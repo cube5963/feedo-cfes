@@ -354,7 +354,7 @@ export default function AnswerQuestionPage() {
                 flexDirection: 'column',
                 justifyContent: 'center',
                 pt: 10, // プログレスバーの分
-                pb: 2, // ナビゲーションボタンの分（浮いている分を考慮）
+                pb: 15, // ナビゲーションボタンの分（浮いている分を考慮）
                 px: 3,
                 minHeight: 'calc(100vh - 200px)' // ヘッダー、プログレスバー、フッターを除いた高さ
             }}>
