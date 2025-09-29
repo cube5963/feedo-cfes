@@ -1,7 +1,6 @@
 "use client";
 import {Box, Button, Card, Chip, Container, Divider, Paper, Stack, Typography, Modal} from '@mui/material';
 import {AutoAwesome, BarChart, Shield, Speed} from '@mui/icons-material';
-import {useRouter} from 'next/navigation';
 import React, {useEffect, useRef} from 'react';
 import gsap from 'gsap';
 import {ScrollTrigger} from 'gsap/dist/ScrollTrigger';
