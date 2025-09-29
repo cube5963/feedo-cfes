@@ -237,6 +237,7 @@ export default function Project() {
 
         try {
             const supabase = createAnonClient(); // 個人用クライアント使用
+            const {data: sessionData, error: sessionError} = await supabase.auth.getSession();
 
             // フォームの所有者確認（念のため）
             const {data: formCheck, error: checkError} = await supabase
@@ -261,9 +262,8 @@ export default function Project() {
             // 関連するSectionを論理削除
             const {error: sectionError} = await supabase
                 .from('Section')
-                .update({Delete: true, UpdatedAt: new Date().toISOString()})
+                .delete()
                 .eq('FormUUID', formId)
-                .eq('Delete', false);
 
             if (sectionError) {
                 console.error('セクション削除エラー:', sectionError);

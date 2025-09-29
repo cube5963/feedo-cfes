@@ -119,7 +119,7 @@ export default function FormManager({initialSections = [], formId, hideFormSelec
                 setMessage('質問が正常に保存されました')
 
                 if (currentFormId) {
-                    fetch(`/api/sections?projectId=${currentFormId}`, {method: 'DELETE'})
+                    fetch(`/api/sections/redis?projectId=${currentFormId}`, {method: 'DELETE'})
                 }
 
                 // SectionCreatorをリセット
@@ -145,12 +145,22 @@ export default function FormManager({initialSections = [], formId, hideFormSelec
 
         try {
             const supabase = createAnonClient()
+            const {data: sessionData, error: sessionError} = await supabase.auth.getSession();
 
+            console.log('Session Data:', sessionData);
+
+            /*
             const {error} = await supabase
                 .from('Section')
                 .update({Delete: true, UpdatedAt: new Date().toISOString()})
                 .eq('SectionUUID', sectionId)
-                .eq('Delete', false)
+
+             */
+
+            const {error} = await supabase
+                .from('Section')
+                .delete()
+                .eq('SectionUUID', sectionId)
 
             if (error) {
                 setMessage(`削除に失敗しました: ${error.message}`)
@@ -177,7 +187,7 @@ export default function FormManager({initialSections = [], formId, hideFormSelec
                 .eq('SectionUUID', sectionId)
 
             if (currentFormId) {
-                fetch(`/api/sections?projectId=${currentFormId}`, {method: 'DELETE'})
+                fetch(`/api/sections/redis?projectId=${currentFormId}`, {method: 'DELETE'})
             }
 
             if (error) {
@@ -226,7 +236,7 @@ export default function FormManager({initialSections = [], formId, hideFormSelec
                 }
 
                 if (currentFormId) {
-                    fetch(`/api/sections?projectId=${currentFormId}`, {method: 'DELETE'})
+                    fetch(`/api/sections/redis?projectId=${currentFormId}`, {method: 'DELETE'})
                 }
 
                 setMessage('質問の順序を更新しました')
