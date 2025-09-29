@@ -2,7 +2,7 @@
 
 import {useEffect, useState} from "react";
 import {useParams, useRouter} from "next/navigation";
-import {Alert, Box, CircularProgress, Typography} from "@mui/material";
+import {Alert, Box, CircularProgress, Typography,Button} from "@mui/material";
 import Header from "@/app/_components/Header";
 import {createAnonClient} from "@/utils/supabase/anonClient";
 
@@ -87,6 +87,7 @@ export default function AnswerCompletePage() {
                 <Typography variant="h5" align="center" sx={{mb: 3, fontWeight: 600, color: '#333'}}>
                     {formData?.FormMessage ? `${formData.FormMessage} ` : "ご協力ありがとうございました！"}
                 </Typography>
+                <Button onClick={() => router.push('/')}>FEEDOの紹介へ</Button>
             </Box>
         </Box>
     );
