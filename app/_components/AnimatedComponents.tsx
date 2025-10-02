@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, RefObject } from 'react';
 import { Box, Card} from '@mui/material';
 import { useHoverAnimation } from '../../lib/hooks/useGSAPAnimations';
 import gsap from 'gsap';
@@ -26,6 +26,7 @@ export const AnimatedCard: React.FC<AnimatedCardProps> = ({
 
     // ホバーアニメーション
     useHoverAnimation(cardRef, { scale: hoverScale });
+
 
     // 初期アニメーション
     useEffect(() => {
