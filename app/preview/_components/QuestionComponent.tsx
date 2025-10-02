@@ -175,7 +175,7 @@ export default function QuestionComponent({section, onAnswer, isAnswered = false
             case 'checkbox':
                 const checkboxOptions = parseOptionsFromDesc(section.SectionDesc);
                 return (
-                    <Box sx={{display: 'flex', flexDirection: 'column', gap: 1.5}}>
+                    <Box sx={{display: 'flex', flexDirection: 'column', justifyContent:'center',}}>
                         <FormGroup>
                             {checkboxOptions.map((option: string, index: number) => (
                                 <FormControlLabel
@@ -209,7 +209,7 @@ export default function QuestionComponent({section, onAnswer, isAnswered = false
 
             case 'text':
                 return (
-                    <Box sx={{width: '100%', px: 1}}>
+                    <Box sx={{width: '100%', justifyContent:'center', alignItems:'center'}}>
                         <Typography variant="body1" color="text.primary"
                                     sx={{mb: 3, textAlign: 'center', fontWeight: 500}}>
                             自由にご記入ください
@@ -251,17 +251,10 @@ export default function QuestionComponent({section, onAnswer, isAnswered = false
             case 'star':
                 const maxStars = getMaxStars(section.SectionDesc);
                 return (
-                    <Box sx={{textAlign: 'center', py: 3}}>
+                    <Box sx={{textAlign: 'center', py: 3, justifyContent:'center', alignItems:'center'}}>
                         <Typography variant="body1" color="text.primary" sx={{mb: 4, fontWeight: 500}}>
                             星の数で評価してください
                         </Typography>
-                        <Box sx={{
-                            backgroundColor: '#f8f9fa',
-                            borderRadius: 3,
-                            p: 4,
-                            border: '1px solid #e0e0e0',
-                            display: 'inline-block'
-                        }}>
                             <Rating
                                 value={answer || 0}
                                 onChange={(event, newValue) => handleRatingChange(newValue)}
@@ -293,7 +286,6 @@ export default function QuestionComponent({section, onAnswer, isAnswered = false
                                     {answer} / {maxStars}
                                 </Typography>
                             )}
-                        </Box>
                     </Box>
                 );
 
