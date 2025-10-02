@@ -11,10 +11,12 @@ import Header from '@/app/_components/Header';
 import {Turnstile} from '@marsidev/react-turnstile';
 import {createAnonClient} from "@/utils/supabase/anonClient";
 import {string} from "prop-types";
+import FingerprintJS from '@fingerprintjs/fingerprintjs';
 
 interface FormData {
     FormUUID: string;
     FormName: string;
+    singleResponse: boolean;
 }
 
 export default function AnswerQuestionPage() {
@@ -84,10 +86,25 @@ export default function AnswerQuestionPage() {
             // フォーム情報を取得
             const {data: formData, error: formError} = await supabase
                 .from('Form')
-                .select('FormUUID, FormName')
+                .select('FormUUID, FormName, singleResponse')
                 .eq('FormUUID', projectId)
                 .eq('Delete', false)
                 .single();
+
+            if(formData.singleResponse === true){
+                const fpPromise = FingerprintJS.load();
+
+                (async () => {
+                    const fp = await fpPromise;
+                    const result = await fp.get();
+                    const visitorId = result.visitorId;
+
+                    const res = await fetch(`/api/fingerprint?form_id=${projectId}&fingerprint=${visitorId}`);
+                    const data = await res.json();
+                    if (data.error) throw data.error;
+                    console.log(data.result);
+                })();
+            }
 
             if (formError) {
                 setError('フォームが見つかりません');

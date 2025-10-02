@@ -5,7 +5,7 @@ import FormComponent from '@/app/_components/form'
 import {
     Alert,
     Box,
-    Button,
+    Button, Checkbox,
     Divider,
     FormControl,
     FormLabel,
@@ -32,6 +32,7 @@ export default function ProjectPage() {
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState("")
     const [currentTab, setCurrentTab] = useState(0) // タブの状態を追加
+    const [singleResponse, setSingleResponse] = useState(false)
 
     // フォーム終了メッセージを取得する関数
     const fetchFormMessage = async () => {
@@ -203,65 +204,6 @@ export default function ProjectPage() {
         )
     }
 
-    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0]
-        if (!file) return
-        if (file.size > 5 * 1024 * 1024) {
-            setMessage('画像サイズは5MB以下にしてください')
-            return
-        }
-        setUploading(true)
-
-        const img = new window.Image()
-        img.src = URL.createObjectURL(file)
-        await new Promise((resolve) => {
-            img.onload = resolve
-        })
-
-        const maxSide = Math.max(img.width, img.height)
-        const targetSize = getNearestSize(maxSide)
-        const canvas = document.createElement('canvas')
-        canvas.width = targetSize
-        canvas.height = targetSize
-        const ctx = canvas.getContext('2d')!
-        ctx.fillStyle = '#fff'
-        ctx.fillRect(0, 0, targetSize, targetSize)
-        // 中央に描画
-        const offsetX = (targetSize - img.width * (targetSize / maxSide)) / 2
-        const offsetY = (targetSize - img.height * (targetSize / maxSide)) / 2
-        ctx.drawImage(
-            img,
-            offsetX,
-            offsetY,
-            img.width * (targetSize / maxSide),
-            img.height * (targetSize / maxSide)
-        )
-
-        const blob: Blob = await new Promise((resolve) =>
-            canvas.toBlob((b) => resolve(b!), file.type)
-        )
-
-        const supabase = createAnonClient()
-        const filePath = `feedo/${projectId}/${file.name}`
-
-        const {error} = await supabase.storage
-            .from('feedo')
-            .upload(filePath, blob, {upsert: true})
-
-        if (error) {
-            setMessage('画像のアップロードに失敗しました')
-            setUploading(false)
-            return
-        }
-
-        const {data} = supabase.storage
-            .from('feedo')
-            .getPublicUrl(filePath)
-        setImageUrl(data.publicUrl)
-        setUploading(false)
-        setMessage('画像をアップロードしました')
-    }
-
     // コンポーネントマウント時にフォーム名・メッセージを取得
     useEffect(() => {
         const checkSession = async () => {
@@ -285,6 +227,57 @@ export default function ProjectPage() {
             }
         };
         checkSession();
+    }, [projectId]);
+
+    const fetchSingleResponse = async () => {
+        try {
+            const supabase = createAnonClient()
+            const {data, error} = await supabase
+                .from('Form')
+                .select('singleResponse')
+                .eq('FormUUID', projectId)
+                .eq('Delete', false)
+                .single()
+
+            if (error || !data) {
+                console.error('SingleResponse取得エラー:', error)
+                return
+            }
+            setSingleResponse(data.singleResponse || false)
+        } catch (error) {
+            console.error('SingleResponse取得エラー:', error)
+        }
+    }
+
+    const updateSingleResponse = async (newSingleResponse: boolean) => {
+        setLoading(true)
+        try {
+            const supabase = createAnonClient()
+            const {error} = await supabase
+                .from('Form')
+                .update({singleResponse: newSingleResponse, UpdatedAt: new Date().toISOString()})
+                .eq('FormUUID', projectId)
+                .eq('Delete', false)
+
+            if (error) {
+                console.error('SingleResponse更新エラー:', error)
+                setMessage('回答の重複設定の更新に失敗しました')
+                return
+            }
+            setMessage('回答の重複設定を更新しました')
+            setTimeout(() => setMessage(''), 3000)
+        } catch (error) {
+            console.error('SingleResponse更新エラー:', error)
+            setMessage('回答の重複設定の更新に失敗しました')
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        if (projectId) {
+            fetchSingleResponse();
+        }
     }, [projectId]);
 
     useEffect(() => {
@@ -426,6 +419,24 @@ export default function ProjectPage() {
                                 inputProps={{maxLength: 200}}
                                 disabled={loading}
                             />
+                        </Box>
+                    </FormControl>
+
+                    <FormControl component="fieldset">
+                        <FormLabel style={{fontWeight: 'bold', color: 'black'}}>複数回答</FormLabel>
+                        <Box sx={{mt: 1, display: 'flex', alignItems: 'center'}}>
+                            <Checkbox
+                                checked={singleResponse}
+                                onChange={async (e) => {
+                                    const newValue = e.target.checked;
+                                    setSingleResponse(newValue);
+                                    await updateSingleResponse(newValue);
+                                }}
+                                disabled={loading}
+                            />
+                            <Typography variant="body2" color="text.secondary" sx={{ml: 1}}>
+                                回答を１度のみにする
+                            </Typography>
                         </Box>
                     </FormControl>
 
