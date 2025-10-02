@@ -2,13 +2,12 @@
 
 import React, {useEffect, useState} from 'react';
 import {useParams, useRouter} from 'next/navigation';
-import {Alert, Box, CircularProgress, Typography} from '@mui/material';
+import {Alert, Box, CircularProgress, Typography, Button} from '@mui/material';
 import {Section} from '@/app/_components/forms/types';
 import QuestionComponent from '@/app/preview/_components/QuestionComponent';
 import ProgressBar from '@/app/preview/_components/ProgressBar';
 import AnswerNavigationButtons from '@/app/answer/_components/AnswerNavigationButtons';
 import Header from '@/app/_components/Header';
-import {Turnstile} from '@marsidev/react-turnstile';
 import {createAnonClient} from "@/utils/supabase/anonClient";
 import {string} from "prop-types";
 
@@ -32,9 +31,52 @@ export default function AnswerQuestionPage() {
     const [answers, setAnswers] = useState<Record<string, any>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [answerUUID, setAnswerUUID] = useState<string | null>(null);
-    const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
+    const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+    const [singleResponse, setSingleResponse] = useState(false);
+    const [isFirstQuestion, setIsFirstQuestion] = useState(false);
+    const [isDuplicateResponse, setIsDuplicateResponse] = useState(false);
+    const [fingerprintChecking, setFingerprintChecking] = useState(false);
 
     const siteKey = process.env.NEXT_PUBLIC_CF_TURNSTILE_SITE_KEY
+
+    // フィンガープリントによる重複チェック
+    const checkDuplicateResponse = async () => {
+        try {
+            setFingerprintChecking(true);
+            
+            // 動的にFingerprintJSをインポート
+            const FingerprintJS = await import('@fingerprintjs/fingerprintjs');
+            const fp = await FingerprintJS.default.load();
+            const result = await fp.get();
+            
+            const response = await fetch(`/api/fingerprint?fingerprint=${encodeURIComponent(result.visitorId)}&FormUUID=${projectId}`);
+            
+            if (response.status === 404) {
+                // フィンガープリントが見つからない = 新規回答者
+                setIsDuplicateResponse(false);
+                return;
+            }
+            
+            if (!response.ok) {
+                console.error('重複チェックに失敗しました');
+                setIsDuplicateResponse(false);
+                return;
+            }
+            
+            const data = await response.json();
+            if (data.exists || data.isDuplicate) {
+                setIsDuplicateResponse(true);
+            } else {
+                setIsDuplicateResponse(false);
+            }
+            
+        } catch (error) {
+            console.error('フィンガープリントチェックエラー:', error);
+            setIsDuplicateResponse(false); // エラーの場合は回答を許可
+        } finally {
+            setFingerprintChecking(false);
+        }
+    };
 
     useEffect(() => {
         if (!answerUUID) return;
@@ -81,10 +123,10 @@ export default function AnswerQuestionPage() {
             setLoading(true);
             const supabase = createAnonClient() // 回答専用クライアント使用
 
-            // フォーム情報を取得
+            // フォーム情報とsingleResponseを取得
             const {data: formData, error: formError} = await supabase
                 .from('Form')
-                .select('FormUUID, FormName')
+                .select('FormUUID, FormName, singleResponse')
                 .eq('FormUUID', projectId)
                 .eq('Delete', false)
                 .single();
@@ -120,6 +162,14 @@ export default function AnswerQuestionPage() {
 
             setSections(sectionsData || []);
 
+            // singleResponseを設定
+            setSingleResponse(formData.singleResponse || false);
+
+            // 最初の質問かどうかを判定
+            const firstSection = sectionsData?.[0];
+            const isFirst = firstSection?.SectionUUID === questionId;
+            setIsFirstQuestion(isFirst);
+
             // 現在の質問を特定
             const currentSectionData = sectionsData?.find((s: Section) => s.SectionUUID === questionId);
             if (!currentSectionData) {
@@ -132,6 +182,11 @@ export default function AnswerQuestionPage() {
             // 現在の質問のインデックスを取得
             const index = sectionsData?.findIndex((s: Section) => s.SectionUUID === questionId) ?? 0;
             setCurrentIndex(index);
+
+            // 最初の質問でsingleResponseがtrueの場合、重複チェックを実行
+            if (isFirst && formData.singleResponse) {
+                await checkDuplicateResponse();
+            }
 
         } catch (error) {
             console.error('データ取得エラー:', error);
@@ -278,7 +333,7 @@ export default function AnswerQuestionPage() {
     const isAnswered = currentSection ?
         answers[currentSection.SectionUUID!] !== undefined : false;
 
-    if (loading) {
+    if (loading || fingerprintChecking) {
         return (
             <Box sx={{
                 display: 'flex',
@@ -289,7 +344,52 @@ export default function AnswerQuestionPage() {
                 mx: 'auto',
                 backgroundColor: '#f8f9fa'
             }}>
-                <CircularProgress/>
+                <Box sx={{ textAlign: 'center' }}>
+                    <CircularProgress/>
+                    {fingerprintChecking && (
+                        <Typography variant="body2" sx={{ mt: 2, color: '#666' }}>
+                            回答履歴を確認中...
+                        </Typography>
+                    )}
+                </Box>
+            </Box>
+        );
+    }
+
+    // 重複回答の場合の画面
+    if (isDuplicateResponse && isFirstQuestion && singleResponse) {
+        return (
+            <Box sx={{
+                minHeight: '100vh',
+                backgroundColor: '#f8f9fa',
+                display: 'flex',
+                flexDirection: 'column',
+                maxWidth: 480,
+                mx: 'auto',
+                position: 'relative'
+            }}>
+                <Header title="アンケート" maxWidth={480} showBackButton={false} />
+                <Box sx={{
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    px: 3,
+                    textAlign: 'center'
+                }}>
+                    <Typography variant="h5" sx={{ mb: 3, fontWeight: 600, color: '#333' }}>
+                        既に回答済みです
+                    </Typography>
+                    <Typography variant="body1" sx={{ mb: 4, color: '#666', lineHeight: 1.6 }}>
+                        このアンケートは既にご回答いただいております。<br />
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: '#999', fontSize: '0.9rem' }}>
+                        ご協力ありがとうございました。
+                    </Typography>
+
+                    <Button onClick={() => router.push('/')}>FEEDOの紹介へ</Button>
+                </Box>
             </Box>
         );
     }

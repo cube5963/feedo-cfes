@@ -2,7 +2,7 @@
 
 import {useEffect, useState} from "react";
 import {useParams, useRouter} from "next/navigation";
-import {Alert, Box, CircularProgress, Typography} from "@mui/material";
+import {Alert, Box, CircularProgress, Typography,Button} from "@mui/material";
 import Header from "@/app/_components/Header";
 import {createAnonClient} from "@/utils/supabase/anonClient";
 
@@ -13,6 +13,50 @@ export default function AnswerCompletePage() {
     const [formData, setFormData] = useState<{ FormMessage?: string; FormName?: string } | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    // フィンガープリントを保存する関数
+    const saveFingerprint = async () => {
+        try {
+            console.log('フィンガープリント保存開始:', { projectId });
+            
+            // 動的にFingerprintJSをインポート
+            const FingerprintJS = await import('@fingerprintjs/fingerprintjs');
+            const fp = await FingerprintJS.default.load();
+            const result = await fp.get();
+            
+            console.log('フィンガープリント取得完了:', { visitorId: result.visitorId });
+            
+            const requestData = {
+                fingerprint: result.visitorId,
+                FormUUID: projectId
+            };
+            
+            console.log('API送信データ:', requestData);
+            
+            const response = await fetch('/api/fingerprint', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ error: 'レスポンス解析失敗' }));
+                console.error('フィンガープリント保存に失敗しました:', {
+                    status: response.status,
+                    statusText: response.statusText,
+                    error: errorData
+                });
+                return;
+            }
+
+            const data = await response.json();
+            console.log('フィンガープリント保存結果:', data);
+        } catch (error) {
+            console.error('フィンガープリント保存エラー:', error);
+        }
+    };
 
     useEffect(() => {
         const fetchForm = async () => {
@@ -45,7 +89,10 @@ export default function AnswerCompletePage() {
             });
         };
 
-        if (projectId) fetchForm();
+        if (projectId) {
+            fetchForm();
+            saveFingerprint(); // フィンガープリントを保存
+        }
         accessCount();
     }, [projectId]);
 
@@ -87,6 +134,7 @@ export default function AnswerCompletePage() {
                 <Typography variant="h5" align="center" sx={{mb: 3, fontWeight: 600, color: '#333'}}>
                     {formData?.FormMessage ? `${formData.FormMessage} ` : "ご協力ありがとうございました！"}
                 </Typography>
+                <Button onClick={() => router.push('/')}>FEEDOの紹介へ</Button>
             </Box>
         </Box>
     );
