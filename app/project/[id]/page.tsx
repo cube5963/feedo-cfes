@@ -13,7 +13,8 @@ import {
     Tab,
     Tabs,
     TextField,
-    Typography
+    Typography,
+    Checkbox
 } from '@mui/material'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import Header from '@/app/_components/Header'
@@ -32,7 +33,7 @@ export default function ProjectPage() {
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState("")
     const [currentTab, setCurrentTab] = useState(0) // タブの状態を追加
-
+    const [singleResponse, setSingleResponse] = useState(false)
     // フォーム終了メッセージを取得する関数
     const fetchFormMessage = async () => {
         try {
@@ -282,6 +283,7 @@ export default function ProjectPage() {
             if (projectId) {
                 fetchFormName();
                 fetchFormMessage();
+                fetchSingleResponse();
             }
         };
         checkSession();
@@ -304,6 +306,57 @@ export default function ProjectPage() {
         fetchImage()
     }, [projectId])
 
+
+    const fetchSingleResponse = async () => {
+        try {
+            const supabase = createAnonClient()
+            const {data, error} = await supabase
+                .from('Form')
+                .select('singleResponse')
+                .eq('FormUUID', projectId)
+                .eq('Delete', false)
+                .single()
+                
+            if (error || !data) {
+                console.error('SingleResponse取得エラー:', error)
+                return
+            }
+            setSingleResponse(data.singleResponse || false)
+        } catch (error) {
+            console.error('SingleResponse取得エラー:', error)
+        }
+    }
+
+    const updateSingleResponse = async (newSingleResponse: boolean) => {
+        setLoading(true)
+        try {
+            const supabase = createAnonClient()
+            const {error} = await supabase
+                .from('Form')
+                .update({singleResponse: newSingleResponse, UpdatedAt: new Date().toISOString()})
+                .eq('FormUUID', projectId)
+                .eq('Delete', false)
+
+            if (error) {
+                console.error('SingleResponse更新エラー:', error)
+                setMessage('回答の重複設定の更新に失敗しました')
+                return
+            }
+            setMessage('回答の重複設定を更新しました')
+            setTimeout(() => setMessage(''), 3000)
+        } catch (error) {
+            console.error('SingleResponse更新エラー:', error)
+            setMessage('回答の重複設定の更新に失敗しました')
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        if (projectId) {
+            fetchSingleResponse();
+        }
+    }, [projectId]);
 
     // 統計タブのコンテンツ
     const renderStatisticsTab = () => (
@@ -428,7 +481,23 @@ export default function ProjectPage() {
                             />
                         </Box>
                     </FormControl>
-
+                    <FormControl component="fieldset">
+                        <FormLabel style={{fontWeight: 'bold', color: 'black'}}>回答制限設定</FormLabel>
+                        <Box sx={{mt: 1, display: 'flex', alignItems: 'center'}}>
+                            <Checkbox
+                                checked={singleResponse}
+                                onChange={async (e) => {
+                                    const newValue = e.target.checked;
+                                    setSingleResponse(newValue);
+                                    await updateSingleResponse(newValue);
+                                }}
+                                disabled={loading}
+                            />
+                            <Typography variant="body2" color="text.secondary" sx={{ml: 1}}>
+                                回答者が複数回回答できないようにする
+                            </Typography>
+                        </Box>
+                    </FormControl>
                     <FormControl component="fieldset">
                         <FormLabel component="legend">回答の公開設定</FormLabel>
                         <Box sx={{mt: 1}}>

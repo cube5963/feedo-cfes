@@ -14,6 +14,50 @@ export default function AnswerCompletePage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+    // フィンガープリントを保存する関数
+    const saveFingerprint = async () => {
+        try {
+            console.log('フィンガープリント保存開始:', { projectId });
+            
+            // 動的にFingerprintJSをインポート
+            const FingerprintJS = await import('@fingerprintjs/fingerprintjs');
+            const fp = await FingerprintJS.default.load();
+            const result = await fp.get();
+            
+            console.log('フィンガープリント取得完了:', { visitorId: result.visitorId });
+            
+            const requestData = {
+                fingerprint: result.visitorId,
+                FormUUID: projectId
+            };
+            
+            console.log('API送信データ:', requestData);
+            
+            const response = await fetch('/api/fingerprint', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ error: 'レスポンス解析失敗' }));
+                console.error('フィンガープリント保存に失敗しました:', {
+                    status: response.status,
+                    statusText: response.statusText,
+                    error: errorData
+                });
+                return;
+            }
+
+            const data = await response.json();
+            console.log('フィンガープリント保存結果:', data);
+        } catch (error) {
+            console.error('フィンガープリント保存エラー:', error);
+        }
+    };
+
     useEffect(() => {
         const fetchForm = async () => {
             setLoading(true);
@@ -45,7 +89,10 @@ export default function AnswerCompletePage() {
             });
         };
 
-        if (projectId) fetchForm();
+        if (projectId) {
+            fetchForm();
+            saveFingerprint(); // フィンガープリントを保存
+        }
         accessCount();
     }, [projectId]);
 
