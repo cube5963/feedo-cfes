@@ -361,6 +361,15 @@ export default function AnswerQuestionPage() {
                 onBack={handleBack}
                 maxWidth={480}
                 showBackButton={false}
+                showLoginButton={NEXT_PUBLIC_SUPABASE_URL=https://supabase.feedo.dev
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzQ5MzA4NDAwLCJleHAiOjE5MDcwNzQ4MDB9.Pv5lrDlNHGMG4v41368xTGm7WK8xVPWOC1Dp-7vnBD0
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NDkzMDg0MDAsImV4cCI6MTkwNzA3NDgwMH0.Lg8EXnm4HCw6_FQYk246pcXF6PW_bB9mqoBYbPWNbjI
+NEXT_PUBLIC_AI_API_URL=https://ai-backend.feedo.dev/
+NEXT_PUBLIC_REDIRECT_URL=http://localhost:3000/project
+BACKEND_JWT_SECRET=WNLmSe6yDex6GDTET286DwmUQtCZriVLJJwDe9Z5TanXMN2EHa4CEZbCVC56YQ4t6By3XTVPZee3aSrD7hiPsCVF2FyF5JhxNB5c
+REDIS_URL=https://redis.feedo.dev
+NEXT_PUBLIC_CF_TURNSTILE_SITE_KEY=0x4AAAAAAB3hIvv8HXCPlM4s
+CF_TURNSTILE_SECRET_KEY=0x4AAAAAAB3hIvbIMN7o19plygGSSCuIHEgfalse}
             />
 
             {/* プログレスバー */}

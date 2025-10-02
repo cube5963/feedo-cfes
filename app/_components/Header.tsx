@@ -11,6 +11,7 @@ interface HeaderProps {
     onBack?: () => void;
     showBackButton?: boolean;
     showNavigation?: boolean;
+    showLoginButton?: boolean;
     maxWidth?: number;
 }
 
@@ -19,6 +20,7 @@ export default function Header({
                                    onBack,
                                    showBackButton = true,
                                    showNavigation = false,
+                                   showLoginButton = true,
                                    maxWidth = 1200,
                                }: HeaderProps) {
     const router = useRouter();
@@ -142,8 +144,8 @@ export default function Header({
 
 
                 {/* 右側: アクションボタン */}
-                <Box sx={{display: 'flex', alignItems: 'center', gap: 1, flexShrink: 1, overflow: 'hidden', justifyContent: 'flex-end', pr: 4}}>
-                    {!showBackButton && (
+                <Box sx={{display: 'flex', alignItems: 'center', gap: 1, flexShrink: 1, overflow: 'hidden', justifyContent: 'flex-end', pr: 8}}>
+                    {showLoginButton ? (
                         <>
                             <Button
                                 onClick={() => router.push('/account/signin')}
@@ -168,7 +170,7 @@ export default function Header({
                                 ログイン
                             </Button>
                         </>
-                    )}
+                    ): null}
 
                     {/* ホームボタン（戻るボタンがある場合） */}
                     {showBackButton && (
