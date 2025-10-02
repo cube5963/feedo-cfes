@@ -142,7 +142,7 @@ export default function Header({
 
 
                 {/* 右側: アクションボタン */}
-                <Box sx={{display: 'flex', alignItems: 'center', gap: 1, flexShrink: 1, overflow: 'hidden', justifyContent: 'flex-end', pr: 4}}>
+                <Box sx={{display: 'flex', alignItems: 'center', gap: 1, flexShrink: 1, overflow: 'hidden', justifyContent: 'flex-end', pr: 6}}>
                     {!showBackButton && (
                         <>
                             <Button
