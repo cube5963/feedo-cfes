@@ -344,6 +344,7 @@ export default function AnswerQuestionPage() {
                 onBack={handleBack}
                 maxWidth={480}
                 showBackButton={false}
+                showLoginButton={false}
             />
 
             {/* プログレスバー */}
