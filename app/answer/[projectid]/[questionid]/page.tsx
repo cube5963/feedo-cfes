@@ -9,7 +9,7 @@ import ProgressBar from '@/app/preview/_components/ProgressBar';
 import AnswerNavigationButtons from '@/app/answer/_components/AnswerNavigationButtons';
 import Header from '@/app/_components/Header';
 import {createAnonClient} from "@/utils/supabase/anonClient";
-import {string} from "prop-types";
+
 
 interface FormData {
     FormUUID: string;
