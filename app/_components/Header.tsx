@@ -142,7 +142,7 @@ export default function Header({
 
 
                 {/* 右側: アクションボタン */}
-                <Box sx={{display: 'flex', alignItems: 'center', gap: 1, flexShrink: 1, overflow: 'hidden'}}>
+                <Box sx={{display: 'flex', alignItems: 'center', gap: 1, flexShrink: 1, overflow: 'hidden', justifyContent: 'flex-end', pr: 4}}>
                     {!showBackButton && (
                         <>
                             <Button
@@ -154,7 +154,7 @@ export default function Header({
                                     px: 3,
                                     py: 1,
                                     borderRadius: 2,
-                                    display: {xs: 'none', sm: 'block'},
+                                    display: 'block',
                                     minWidth: 80,
                                     maxWidth: '100%',
                                     overflow: 'hidden',
