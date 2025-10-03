@@ -6,6 +6,10 @@ export async function GET(req: NextRequest) {
     const form_id = req.nextUrl.searchParams.get('form_id');
     const fingerprint = req.nextUrl.searchParams.get('fingerprint');
 
+    if (!form_id || !fingerprint) {
+        return new Response(JSON.stringify({ error: 'Missing parameters' }), { status: 400 });
+    }
+
     const combined = form_id + fingerprint;
     const hash = createHash('sha256').update(combined).digest('hex');
 

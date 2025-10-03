@@ -60,6 +60,13 @@ export default function AnswerCompletePage() {
                     body: JSON.stringify({form_id:projectId, fingerprint: visitorId}),
                 });
             })();
+
+            const answer_user = crypto.randomUUID()
+            const expires = new Date();
+            expires.setFullYear(expires.getFullYear() + 1);
+            document.cookie = `answer_user=${answer_user}; path=/; expires=${expires.toUTCString()}; SameSite=Lax`;
+
+            localStorage.setItem('answer_user', answer_user);
         }
 
         if (projectId) fetchForm();
