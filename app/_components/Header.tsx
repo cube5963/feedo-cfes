@@ -125,22 +125,27 @@ export default function Header({
                             </span>
                         </Button>
                     )}
-
+                    </Box>
+                    <Box sx={{display: 'flex', alignItems: 'center'}}>
                     {/* タイトル */}
                     {title && (
                         <Typography
-                            variant="h6"
-                            sx={{
-                                color: '#000',
-                                fontWeight: 600,
-                                fontSize: '1.1rem',
-                                display: {xs: showBackButton ? 'none' : 'block', sm: 'block'}
-                            }}
-                        >
-                            {title}
-                        </Typography>
+                        variant="h6"
+                        sx={{
+                        position: 'absolute',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        color: '#000',
+                        fontWeight: 600,
+                        fontSize: '1.1rem',
+                        textAlign: 'center',
+                        whiteSpace: 'nowrap',
+                        }}
+                    >
+                        {title}
+                    </Typography>
                     )}
-                </Box>
+                    </Box>
 
 
                 {/* 右側: アクションボタン */}
