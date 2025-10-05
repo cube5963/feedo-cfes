@@ -5,6 +5,7 @@ import {useParams, useRouter} from "next/navigation";
 import {Alert, Box, CircularProgress, Typography} from "@mui/material";
 import Header from "@/app/_components/Header";
 import {createAnonClient} from "@/utils/supabase/anonClient";
+import FingerprintJS from '@fingerprintjs/fingerprintjs';
 
 export default function AnswerCompletePage() {
     const params = useParams();
@@ -45,7 +46,31 @@ export default function AnswerCompletePage() {
             });
         };
 
+        const setFingerprint = async () => {
+            const fpPromise = FingerprintJS.load();
+
+            (async () => {
+                const fp = await fpPromise;
+                const result = await fp.get();
+                const visitorId = result.visitorId;
+
+                const res = await fetch('/api/fingerprint', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({form_id:projectId, fingerprint: visitorId}),
+                });
+            })();
+
+            const answer_user = crypto.randomUUID()
+            const expires = new Date();
+            expires.setFullYear(expires.getFullYear() + 1);
+            document.cookie = `answer_user=${answer_user}; path=/; expires=${expires.toUTCString()}; SameSite=Lax`;
+
+            localStorage.setItem('answer_user', answer_user);
+        }
+
         if (projectId) fetchForm();
+        setFingerprint()
         accessCount();
     }, [projectId]);
 

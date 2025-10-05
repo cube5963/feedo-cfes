@@ -232,43 +232,33 @@ export const useParallaxAnimation = (ref: RefObject<HTMLElement>, options?: {
 };
 
 // ホバーアニメーション
-export const useHoverAnimation = (ref: RefObject<HTMLElement>, options?: {
-  scale?: number;
-  duration?: number;
-  ease?: string;
-}) => {
-  useEffect(() => {
-    if (!ref.current) return;
+export function useHoverAnimation<T extends HTMLElement>(
+    ref: RefObject<T | null>,
+    options?: { scale?: number; duration?: number; ease?: string }
+) {
+    useEffect(() => {
+        if (!ref.current) return;
 
-    const element = ref.current;
-    const { scale = 1.05, duration = 0.3, ease = "power2.out" } = options || {};
+        const element = ref.current;
+        const { scale = 1.05, duration = 0.3, ease = "power2.out" } = options || {};
 
-    const handleMouseEnter = () => {
-      gsap.to(element, {
-        scale,
-        duration,
-        ease
-      });
-    };
+        const handleMouseEnter = () => {
+            gsap.to(element, { scale, duration, ease });
+        };
+        const handleMouseLeave = () => {
+            gsap.to(element, { scale: 1, duration, ease });
+        };
 
-    const handleMouseLeave = () => {
-      gsap.to(element, {
-        scale: 1,
-        duration,
-        ease
-      });
-    };
+        element.addEventListener("mouseenter", handleMouseEnter);
+        element.addEventListener("mouseleave", handleMouseLeave);
 
-    element.addEventListener('mouseenter', handleMouseEnter);
-    element.addEventListener('mouseleave', handleMouseLeave);
-
-    return () => {
-      element.removeEventListener('mouseenter', handleMouseEnter);
-      element.removeEventListener('mouseleave', handleMouseLeave);
-      gsap.killTweensOf(element);
-    };
-  }, [ref, options]);
-};
+        return () => {
+            element.removeEventListener("mouseenter", handleMouseEnter);
+            element.removeEventListener("mouseleave", handleMouseLeave);
+            gsap.killTweensOf(element);
+        };
+    }, [ref, options]);
+}
 
 // 数値カウントアップアニメーション
 export const useCountUpAnimation = (ref: RefObject<HTMLElement>, targetValue: number, options?: {

@@ -11,6 +11,7 @@ interface HeaderProps {
     onBack?: () => void;
     showBackButton?: boolean;
     showNavigation?: boolean;
+    showLoginButton?: boolean;
     maxWidth?: number;
 }
 
@@ -19,6 +20,7 @@ export default function Header({
                                    onBack,
                                    showBackButton = true,
                                    showNavigation = false,
+                                   showLoginButton = true,
                                    maxWidth = 1200,
                                }: HeaderProps) {
     const router = useRouter();
@@ -52,16 +54,22 @@ export default function Header({
                 backdropFilter: 'blur(10px)',
                 borderBottom: '1px solid #e0e0e0',
                 boxShadow: 'none',
-                zIndex: 1100
+                zIndex: 1100,
+                width: '100vw',
+                left: 0,
+                right: 0,
+                overflowX: 'hidden'
             }}
         >
             <Toolbar sx={{
-                maxWidth: maxWidth,
                 width: '100%',
-                mx: 'auto',
+                minWidth: 0,
+                maxWidth: '100vw',
+                mx: 0,
                 justifyContent: 'space-between',
                 px: {xs: 2, sm: 4},
-                py: 1
+                py: 1,
+                overflowX: 'hidden'
             }}>
                 {/* 左側: 戻るボタンまたはロゴ */}
                 <Box sx={{display: 'flex', alignItems: 'center', gap: 2}}>
@@ -117,27 +125,32 @@ export default function Header({
                             </span>
                         </Button>
                     )}
-
+                    </Box>
+                    <Box sx={{display: 'flex', alignItems: 'center'}}>
                     {/* タイトル */}
                     {title && (
                         <Typography
-                            variant="h6"
-                            sx={{
-                                color: '#000',
-                                fontWeight: 600,
-                                fontSize: '1.1rem',
-                                display: {xs: showBackButton ? 'none' : 'block', sm: 'block'}
-                            }}
-                        >
-                            {title}
-                        </Typography>
+                        variant="h6"
+                        sx={{
+                        position: 'absolute',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        color: '#000',
+                        fontWeight: 600,
+                        fontSize: '1.1rem',
+                        textAlign: 'center',
+                        whiteSpace: 'nowrap',
+                        }}
+                    >
+                        {title}
+                    </Typography>
                     )}
-                </Box>
+                    </Box>
 
 
                 {/* 右側: アクションボタン */}
-                <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
-                    {!showBackButton && (
+                <Box sx={{display: 'flex', alignItems: 'center', gap: 1, flexShrink: 1, overflow: 'hidden', justifyContent: 'flex-end', pr: 8}}>
+                    {showLoginButton ? (
                         <>
                             <Button
                                 onClick={() => router.push('/account/signin')}
@@ -148,7 +161,12 @@ export default function Header({
                                     px: 3,
                                     py: 1,
                                     borderRadius: 2,
-                                    display: {xs: 'none', sm: 'block'},
+                                    display: 'block',
+                                    minWidth: 80,
+                                    maxWidth: '100%',
+                                    overflow: 'hidden',
+                                    whiteSpace: 'nowrap',
+                                    textOverflow: 'ellipsis',
                                     '&:hover': {
                                         backgroundColor: '#f5f5f5'
                                     }
@@ -157,7 +175,7 @@ export default function Header({
                                 ログイン
                             </Button>
                         </>
-                    )}
+                    ): null}
 
                     {/* ホームボタン（戻るボタンがある場合） */}
                     {showBackButton && (

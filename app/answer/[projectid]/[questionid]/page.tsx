@@ -10,10 +10,13 @@ import AnswerNavigationButtons from '@/app/answer/_components/AnswerNavigationBu
 import Header from '@/app/_components/Header';
 import {Turnstile} from '@marsidev/react-turnstile';
 import {createAnonClient} from "@/utils/supabase/anonClient";
+import {string} from "prop-types";
+import FingerprintJS from '@fingerprintjs/fingerprintjs';
 
 interface FormData {
     FormUUID: string;
     FormName: string;
+    singleResponse: boolean;
 }
 
 export default function AnswerQuestionPage() {
@@ -36,6 +39,7 @@ export default function AnswerQuestionPage() {
     const siteKey = process.env.NEXT_PUBLIC_CF_TURNSTILE_SITE_KEY
 
     useEffect(() => {
+        if (!answerUUID) return;
         // 履歴を1つだけにする
         router.replace(`/answer/${projectId}/${questionId}?answerUUID=${answerUUID}`);
         // pushStateで履歴を1つに固定
@@ -74,6 +78,18 @@ export default function AnswerQuestionPage() {
         return data.success;
     };
 
+    const getCookie = async (name: string) => {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) {
+            const cookieValue = parts.pop();
+            if (cookieValue) {
+                return cookieValue.split(';').shift();
+            }
+        }
+        return null;
+    }
+
     const fetchData = async () => {
         try {
             setLoading(true);
@@ -82,10 +98,32 @@ export default function AnswerQuestionPage() {
             // フォーム情報を取得
             const {data: formData, error: formError} = await supabase
                 .from('Form')
-                .select('FormUUID, FormName')
+                .select('FormUUID, FormName, singleResponse')
                 .eq('FormUUID', projectId)
                 .eq('Delete', false)
                 .single();
+
+            if (formData && formData.singleResponse === true) {
+                const fpPromise = FingerprintJS.load();
+                (async () => {
+                    const fp = await fpPromise;
+                    const result = await fp.get();
+                    const visitorId = result.visitorId;
+
+                    const res = await fetch(`/api/fingerprint?form_id=${projectId}&fingerprint=${visitorId}`);
+                    const data = await res.json();
+                    if (data.error) throw data.error;
+
+                    if(data.result === true){
+                        const answerUserFromCookie = await getCookie('answer_user');
+                        const answerUserFromLocalStorage = localStorage.getItem('answer_user');
+
+                        if(!!(answerUserFromCookie || answerUserFromLocalStorage)){
+                            setError('すでに回答済みです')
+                        }
+                    }
+                })();
+            }
 
             if (formError) {
                 setError('フォームが見つかりません');
@@ -94,33 +132,28 @@ export default function AnswerQuestionPage() {
 
             setFormData(formData);
 
-            // セクション一覧を取得
-            const redisRes = await fetch(`/api/sections?projectId=${projectId}`);
-            const redisJson = await redisRes.json();
-
             let sectionsData: Section[] | null = null;
 
-            if (redisJson.GET) {
-                //console.log("found data in redis")
-                sectionsData = JSON.parse(redisJson.GET);
+            if(process.env.NEXT_PUBLIC_USE_REDIS === "true"){
+                const redisRes = await fetch(`/api/sections/redis?projectId=${projectId}`);
+                const redisJson = await redisRes.json();
+                if (redisJson.GET) {
+                    //console.log("found data in redis")
+                    sectionsData = JSON.parse(redisJson.GET);
+                } else {
+                    //console.log("not found data in redis")
+                    sectionsData = await fetchSections(projectId);
+
+                    await fetch('/api/sections/redis', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({projectId, sectionsData}),
+                    });
+                }
             } else {
-                //console.log("not found data in redis")
-                const {data, error} = await supabase
-                    .from('Section')
-                    .select('*')
-                    .eq('FormUUID', projectId)
-                    .eq('Delete', false)
-                    .order('SectionOrder', {ascending: true})
-
-                if (error) throw error;
-                sectionsData = data || [];
-
-                await fetch('/api/sections', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({projectId, sectionsData}),
-                });
+                sectionsData = await fetchSections(projectId);
             }
+
             setSections(sectionsData || []);
 
             // 現在の質問を特定
@@ -152,6 +185,13 @@ export default function AnswerQuestionPage() {
             }));
         }
     };
+
+    const fetchSections = async (form_id: string) => {
+        const res = await fetch(`/api/sections?form_id=${form_id}`);
+        const result = await res.json();
+        if (result.error) throw result.error;
+        return result.data;
+    }
 
     // 常に新規回答をinsertする
     const saveAnswer = async (sectionUUID: string, answerData: any) => {
@@ -340,6 +380,7 @@ export default function AnswerQuestionPage() {
                 onBack={handleBack}
                 maxWidth={480}
                 showBackButton={false}
+                showLoginButton={false}
             />
 
             {/* プログレスバー */}
