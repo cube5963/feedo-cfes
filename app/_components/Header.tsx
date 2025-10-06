@@ -12,6 +12,7 @@ interface HeaderProps {
     showBackButton?: boolean;
     showNavigation?: boolean;
     showLoginButton?: boolean;
+    showTitle?: boolean;
     maxWidth?: number;
 }
 
@@ -21,6 +22,7 @@ export default function Header({
                                    showBackButton = true,
                                    showNavigation = false,
                                    showLoginButton = true,
+                                   showTitle = true,
                                    maxWidth = 1200,
                                }: HeaderProps) {
     const router = useRouter();
@@ -99,6 +101,9 @@ export default function Header({
                                 fontWeight: 900,
                                 fontSize: '1.5rem',
                                 textTransform: 'none',
+                                position: showTitle ? 'static' : 'absolute',
+                                left: showTitle ? 'auto' : '50%',
+                                transform: showTitle ? 'none' : 'translateX(-50%)',
                                 p: 0,
                                 minWidth: 'auto',
                                 '&:hover': {
@@ -128,7 +133,7 @@ export default function Header({
                     </Box>
                     <Box sx={{display: 'flex', alignItems: 'center'}}>
                     {/* タイトル */}
-                    {title && (
+                    {title && showTitle && (
                         <Typography
                         variant="h6"
                         sx={{
