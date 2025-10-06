@@ -13,6 +13,7 @@ interface HeaderProps {
     showNavigation?: boolean;
     showLoginButton?: boolean;
     showTitle?: boolean;
+    showHomeButton?: boolean;
     maxWidth?: number;
 }
 
@@ -23,6 +24,7 @@ export default function Header({
                                    showNavigation = false,
                                    showLoginButton = true,
                                    showTitle = true,
+                                   showHomeButton = true,
                                    maxWidth = 1200,
                                }: HeaderProps) {
     const router = useRouter();
@@ -183,7 +185,7 @@ export default function Header({
                     ): null}
 
                     {/* ホームボタン（戻るボタンがある場合） */}
-                    {showBackButton && (
+                    {showHomeButton && (
                         <IconButton
                             onClick={() => router.push('/')}
                             sx={{

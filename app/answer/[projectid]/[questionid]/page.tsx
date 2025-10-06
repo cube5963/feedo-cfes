@@ -381,6 +381,7 @@ export default function AnswerQuestionPage() {
                 maxWidth={480}
                 showBackButton={false}
                 showLoginButton={false}
+                showHomeButton={false}
                 showTitle={false}
             />
 

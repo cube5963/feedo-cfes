@@ -472,6 +472,8 @@ export default function ProjectPage() {
             <Header
                 title="プロジェクト編集"
                 onBack={() => router.push('/project')}
+                showLoginButton = {false}
+                showHomeButton = {false}
             />
 
             {/* メインコンテンツ */}
