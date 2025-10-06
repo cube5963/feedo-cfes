@@ -302,6 +302,8 @@ export default function Project() {
             <Header
                 title="プロジェクト一覧"
                 showBackButton={false}
+                showLoginButton={false}
+                showHomeButton={false}
             />
 
             <Box sx={{maxWidth: 500, margin: 'auto', pt: 10, pb: 4, px: 2}}>
