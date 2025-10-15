@@ -112,10 +112,10 @@ export default function AnswerCompletePage() {
                 <Typography variant="h5" align="center" sx={{mb: 3, fontWeight: 600, color: '#333'}}>
                     {formData?.FormMessage ? `${formData.FormMessage} ` : "ご協力ありがとうございました！"}
                 </Typography>
+                <Button variant="outlined" color="primary" onClick={() => router.push("/")}>
+                    FEEDOの紹介ページへ
+                </Button>
             </Box>
-            <Button variant="outlined" color="primary" onClick={() => router.push("/")}>
-                FEEDOの紹介ページへ
-            </Button>
         </Box>
     );
 }

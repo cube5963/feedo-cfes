@@ -255,13 +255,6 @@ export default function QuestionComponent({section, onAnswer, isAnswered = false
                         <Typography variant="body1" color="text.primary" sx={{mb: 4, fontWeight: 500}}>
                             星の数で評価してください
                         </Typography>
-                        <Box sx={{
-                            backgroundColor: '#f8f9fa',
-                            borderRadius: 3,
-                            p: 4,
-                            border: '1px solid #e0e0e0',
-                            display: 'inline-block'
-                        }}>
                             <Rating
                                 value={answer || 0}
                                 onChange={(event, newValue) => handleRatingChange(newValue)}
@@ -293,7 +286,6 @@ export default function QuestionComponent({section, onAnswer, isAnswered = false
                                     {answer} / {maxStars}
                                 </Typography>
                             )}
-                        </Box>
                     </Box>
                 );
 
