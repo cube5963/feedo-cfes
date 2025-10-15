@@ -1,7 +1,7 @@
 "use client";
-import React, { useRef, useEffect, useState, RefObject } from 'react';
-import { Box, Card} from '@mui/material';
-import { useHoverAnimation } from '../../lib/hooks/useGSAPAnimations';
+import React, {useEffect, useRef, useState} from 'react';
+import {Box, Card} from '@mui/material';
+import {useHoverAnimation} from '@/lib/hooks/useGSAPAnimations';
 import gsap from 'gsap';
 
 interface AnimatedCardProps {
@@ -10,22 +10,23 @@ interface AnimatedCardProps {
     sx?: any;
     hoverScale?: number;
     animationDelay?: number;
+
     [key: string]: any;
 }
 
 // アニメーション付きカードコンポーネント
 export const AnimatedCard: React.FC<AnimatedCardProps> = ({
-    children,
-    className = '',
-    sx = {},
-    hoverScale = 1.02,
-    animationDelay = 0,
-    ...props
-}) => {
+                                                              children,
+                                                              className = '',
+                                                              sx = {},
+                                                              hoverScale = 1.02,
+                                                              animationDelay = 0,
+                                                              ...props
+                                                          }) => {
     const cardRef = useRef<HTMLDivElement>(null);
 
     // ホバーアニメーション
-    useHoverAnimation(cardRef, { scale: hoverScale });
+    useHoverAnimation(cardRef, {scale: hoverScale});
 
 
     // 初期アニメーション
@@ -77,17 +78,18 @@ interface AnimatedButtonProps {
     startIcon?: React.ReactNode;
     sx?: any;
     animationType?: 'scale' | 'slide' | 'bounce';
+
     [key: string]: any;
 }
 
 // アニメーション付きボタンコンポーネント
 export const AnimatedButton: React.FC<AnimatedButtonProps> = ({
-    children,
-    className = '',
-    animationType = 'scale',
-    sx = {},
-    ...props
-}) => {
+                                                                  children,
+                                                                  className = '',
+                                                                  animationType = 'scale',
+                                                                  sx = {},
+                                                                  ...props
+                                                              }) => {
     const buttonRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
@@ -133,8 +135,8 @@ export const AnimatedButton: React.FC<AnimatedButtonProps> = ({
 
         const handleClick = () => {
             gsap.fromTo(button,
-                { scale: 1 },
-                { scale: 0.95, duration: 0.1, yoyo: true, repeat: 1, ease: "power2.inOut" }
+                {scale: 1},
+                {scale: 0.95, duration: 0.1, yoyo: true, repeat: 1, ease: "power2.inOut"}
             );
         };
 
@@ -179,13 +181,13 @@ interface FloatingElementProps {
 
 // 浮遊アニメーション要素
 export const FloatingElement: React.FC<FloatingElementProps> = ({
-    children,
-    floatDirection = 'up',
-    floatDistance = 10,
-    duration = 2,
-    className = '',
-    sx = {}
-}) => {
+                                                                    children,
+                                                                    floatDirection = 'up',
+                                                                    floatDistance = 10,
+                                                                    duration = 2,
+                                                                    className = '',
+                                                                    sx = {}
+                                                                }) => {
     const elementRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -196,16 +198,16 @@ export const FloatingElement: React.FC<FloatingElementProps> = ({
 
         switch (floatDirection) {
             case 'up':
-                animationProps = { y: -floatDistance };
+                animationProps = {y: -floatDistance};
                 break;
             case 'down':
-                animationProps = { y: floatDistance };
+                animationProps = {y: floatDistance};
                 break;
             case 'left':
-                animationProps = { x: -floatDistance };
+                animationProps = {x: -floatDistance};
                 break;
             case 'right':
-                animationProps = { x: floatDistance };
+                animationProps = {x: floatDistance};
                 break;
         }
 
@@ -243,12 +245,12 @@ interface PulsingElementProps {
 
 // パルスアニメーション要素
 export const PulsingElement: React.FC<PulsingElementProps> = ({
-    children,
-    pulseScale = 1.05,
-    duration = 1.5,
-    className = '',
-    sx = {}
-}) => {
+                                                                  children,
+                                                                  pulseScale = 1.05,
+                                                                  duration = 1.5,
+                                                                  className = '',
+                                                                  sx = {}
+                                                              }) => {
     const elementRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -288,12 +290,12 @@ interface GlowEffectProps {
 
 // グロー効果コンポーネント
 export const GlowEffect: React.FC<GlowEffectProps> = ({
-    children,
-    glowColor = '#ffffff',
-    intensity = 20,
-    className = '',
-    sx = {}
-}) => {
+                                                          children,
+                                                          glowColor = '#ffffff',
+                                                          intensity = 20,
+                                                          className = '',
+                                                          sx = {}
+                                                      }) => {
     const elementRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -354,13 +356,13 @@ interface ExplodeEffectProps {
 
 // 爆発エフェクト
 export const ExplodeEffect: React.FC<ExplodeEffectProps> = ({
-    children,
-    triggerOnHover = true,
-    explodeScale = 1.3,
-    duration = 0.6,
-    className = '',
-    sx = {}
-}) => {
+                                                                children,
+                                                                triggerOnHover = true,
+                                                                explodeScale = 1.3,
+                                                                duration = 0.6,
+                                                                className = '',
+                                                                sx = {}
+                                                            }) => {
     const elementRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -436,13 +438,13 @@ interface Flip3DCardProps {
 
 // 3Dフリップカード
 export const Flip3DCard: React.FC<Flip3DCardProps> = ({
-    frontContent,
-    backContent,
-    autoFlip = false,
-    flipInterval = 4000,
-    className = '',
-    sx = {}
-}) => {
+                                                          frontContent,
+                                                          backContent,
+                                                          autoFlip = false,
+                                                          flipInterval = 4000,
+                                                          className = '',
+                                                          sx = {}
+                                                      }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const frontRef = useRef<HTMLDivElement>(null);
     const backRef = useRef<HTMLDivElement>(null);
@@ -456,9 +458,9 @@ export const Flip3DCard: React.FC<Flip3DCardProps> = ({
         const back = backRef.current;
 
         // 初期設定
-        gsap.set(container, { perspective: 1000 });
-        gsap.set([front, back], { transformStyle: "preserve-3d" });
-        gsap.set(back, { rotationY: 180 });
+        gsap.set(container, {perspective: 1000});
+        gsap.set([front, back], {transformStyle: "preserve-3d"});
+        gsap.set(back, {rotationY: 180});
 
         const flip = () => {
             const newFlipped = !isFlipped;
@@ -473,8 +475,8 @@ export const Flip3DCard: React.FC<Flip3DCardProps> = ({
 
             // 爆発的なスケール変化
             gsap.fromTo(container,
-                { scale: 1 },
-                { scale: 1.1, duration: 0.4, yoyo: true, repeat: 1, ease: "back.out(3)" }
+                {scale: 1},
+                {scale: 1.1, duration: 0.4, yoyo: true, repeat: 1, ease: "back.out(3)"}
             );
         };
 
@@ -540,13 +542,13 @@ interface IntenseBounceProps {
 
 // 激しいバウンスエフェクト
 export const IntenseBounce: React.FC<IntenseBounceProps> = ({
-    children,
-    bounceHeight = 30,
-    bounceScale = 1.2,
-    continuous = true,
-    className = '',
-    sx = {}
-}) => {
+                                                                children,
+                                                                bounceHeight = 30,
+                                                                bounceScale = 1.2,
+                                                                continuous = true,
+                                                                className = '',
+                                                                sx = {}
+                                                            }) => {
     const elementRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -622,12 +624,12 @@ interface RainbowGlowProps {
 
 // レインボーグローエフェクト
 export const RainbowGlow: React.FC<RainbowGlowProps> = ({
-    children,
-    intensity = 20,
-    speed = 2,
-    className = '',
-    sx = {}
-}) => {
+                                                            children,
+                                                            intensity = 20,
+                                                            speed = 2,
+                                                            className = '',
+                                                            sx = {}
+                                                        }) => {
     const elementRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -648,7 +650,7 @@ export const RainbowGlow: React.FC<RainbowGlowProps> = ({
             '#ff0080'  // ピンク
         ];
 
-        const tl = gsap.timeline({ repeat: -1 });
+        const tl = gsap.timeline({repeat: -1});
 
         colors.forEach((color, index) => {
             tl.to(elementRef.current, {
@@ -688,13 +690,13 @@ interface ParticleExplosionProps {
 
 // パーティクル爆発エフェクト
 export const ParticleExplosion: React.FC<ParticleExplosionProps> = ({
-    children,
-    particleCount = 20,
-    colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'],
-    triggerOnClick = true,
-    className = '',
-    sx = {}
-}) => {
+                                                                        children,
+                                                                        particleCount = 20,
+                                                                        colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'],
+                                                                        triggerOnClick = true,
+                                                                        className = '',
+                                                                        sx = {}
+                                                                    }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const particlesRef = useRef<HTMLDivElement[]>([]);
 
@@ -704,7 +706,7 @@ export const ParticleExplosion: React.FC<ParticleExplosionProps> = ({
         const container = containerRef.current;
 
         // パーティクルを作成
-        const particles = Array.from({ length: particleCount }, (_, i) => {
+        const particles = Array.from({length: particleCount}, (_, i) => {
             const particle = document.createElement('div');
             particle.style.position = 'absolute';
             particle.style.width = '4px';
@@ -796,13 +798,13 @@ interface SushiBeltProps {
 
 // 回転ずし風カードコンベアーベルト
 export const SushiBelt: React.FC<SushiBeltProps> = ({
-    cards,
-    speed = 60, // 1周あたりの秒数
-    direction = 'left',
-    cardWidth = 280,
-    className = '',
-    sx = {}
-}) => {
+                                                        cards,
+                                                        speed = 60, // 1周あたりの秒数
+                                                        direction = 'left',
+                                                        cardWidth = 280,
+                                                        className = '',
+                                                        sx = {}
+                                                    }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
     const tlRef = useRef<gsap.core.Timeline | null>(null);
@@ -815,14 +817,14 @@ export const SushiBelt: React.FC<SushiBeltProps> = ({
         const totalWidth = cards.length * (cardWidth + 20); // カード間のマージン込み
         const animationDistance = containerWidth + totalWidth;
 
-        tlRef.current = gsap.timeline({ repeat: -1, ease: "none" });
+        tlRef.current = gsap.timeline({repeat: -1, ease: "none"});
 
         cardRefs.current.forEach((cardEl, index) => {
             if (!cardEl) return;
 
             // 初期位置設定（画面右端から開始）
             const initialX = containerWidth + (cardWidth + 20) * index;
-            gsap.set(cardEl, { x: initialX });
+            gsap.set(cardEl, {x: initialX});
 
             // 左へ移動するアニメーション
             tlRef.current!.to(cardEl, {
@@ -929,11 +931,11 @@ interface MatrixTextProps {
 }
 
 export const MatrixText: React.FC<MatrixTextProps> = ({
-    text,
-    speed = 100,
-    className = '',
-    sx = {}
-}) => {
+                                                          text,
+                                                          speed = 100,
+                                                          className = '',
+                                                          sx = {}
+                                                      }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [displayText, setDisplayText] = useState('');
 
@@ -991,12 +993,12 @@ interface SparkleEffectProps {
 }
 
 export const SparkleEffect: React.FC<SparkleEffectProps> = ({
-    children,
-    sparkleCount = 15,
-    colors = ['#ffd700', '#ffed4e', '#fff9c4'],
-    className = '',
-    sx = {}
-}) => {
+                                                                children,
+                                                                sparkleCount = 15,
+                                                                colors = ['#ffd700', '#ffed4e', '#fff9c4'],
+                                                                className = '',
+                                                                sx = {}
+                                                            }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const sparklesRef = useRef<HTMLDivElement[]>([]);
 
@@ -1006,7 +1008,7 @@ export const SparkleEffect: React.FC<SparkleEffectProps> = ({
         const container = containerRef.current;
 
         // スパークルを作成
-        const sparkles = Array.from({ length: sparkleCount }, (_, i) => {
+        const sparkles = Array.from({length: sparkleCount}, (_, i) => {
             const sparkle = document.createElement('div');
             sparkle.innerHTML = '✨';
             sparkle.style.position = 'absolute';
@@ -1025,7 +1027,7 @@ export const SparkleEffect: React.FC<SparkleEffectProps> = ({
                 const x = Math.random() * container.offsetWidth;
                 const y = Math.random() * container.offsetHeight;
 
-                gsap.set(sparkle, { x, y, scale: 0, opacity: 0 });
+                gsap.set(sparkle, {x, y, scale: 0, opacity: 0});
 
                 gsap.to(sparkle, {
                     scale: 1,
@@ -1087,13 +1089,13 @@ interface NeonGlowProps {
 }
 
 export const NeonGlow: React.FC<NeonGlowProps> = ({
-    children,
-    glowColor = '#00ffff',
-    pulseSpeed = 2,
-    intensity = 30,
-    className = '',
-    sx = {}
-}) => {
+                                                      children,
+                                                      glowColor = '#00ffff',
+                                                      pulseSpeed = 2,
+                                                      intensity = 30,
+                                                      className = '',
+                                                      sx = {}
+                                                  }) => {
     const elementRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {

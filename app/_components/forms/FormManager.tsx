@@ -119,7 +119,7 @@ export default function FormManager({initialSections = [], formId, hideFormSelec
                 setMessage('質問が正常に保存されました')
 
                 if (currentFormId) {
-                    fetch(`/api/sections/redis?projectId=${currentFormId}`, {method: 'DELETE'})
+                    await fetch(`/api/sections/redis?projectId=${currentFormId}`, {method: 'DELETE'})
                 }
 
                 // SectionCreatorをリセット
@@ -165,6 +165,10 @@ export default function FormManager({initialSections = [], formId, hideFormSelec
             if (error) {
                 setMessage(`削除に失敗しました: ${error.message}`)
                 return
+            }
+
+            if (currentFormId) {
+                await fetch(`/api/sections/redis?projectId=${currentFormId}`, {method: 'DELETE'})
             }
 
             setSections(prev => prev.filter(section => section.SectionUUID !== sectionId))

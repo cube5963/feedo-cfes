@@ -278,7 +278,7 @@ export default function Home() {
         },
         {
             name: 'T　Yさん',
-            company: 'バックエンドを担当',
+            company: 'バックエンド・インフラを担当',
             comment: '科技高とかＪ科を死亡した理由とか。',
         },
         {
