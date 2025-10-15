@@ -2,7 +2,7 @@
 
 import {useEffect, useState} from "react";
 import {useParams, useRouter} from "next/navigation";
-import {Alert, Box, CircularProgress, Typography} from "@mui/material";
+import {Alert, Box, CircularProgress, Typography, Button} from "@mui/material";
 import Header from "@/app/_components/Header";
 import {createAnonClient} from "@/utils/supabase/anonClient";
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
@@ -113,6 +113,9 @@ export default function AnswerCompletePage() {
                     {formData?.FormMessage ? `${formData.FormMessage} ` : "ご協力ありがとうございました！"}
                 </Typography>
             </Box>
+            <Button variant="outlined" color="primary" onClick={() => router.push("/")}>
+                FEEDOの紹介ページへ
+            </Button>
         </Box>
     );
 }
