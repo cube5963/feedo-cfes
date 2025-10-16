@@ -197,12 +197,12 @@ export default function ProjectPage() {
         }
     }
 
-    function getNearestSize(value: number): number {
+    {/*function getNearestSize(value: number): number {
         const sizes = [64, 128, 256]
         return sizes.reduce((prev, curr) =>
             Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev
         )
-    }
+    }*/}
 
     // コンポーネントマウント時にフォーム名・メッセージを取得
     useEffect(() => {
