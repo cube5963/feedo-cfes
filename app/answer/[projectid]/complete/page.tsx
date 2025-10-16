@@ -102,7 +102,8 @@ export default function AnswerCompletePage() {
             <Header title="アンケート完了"
                 maxWidth={480}
                 showBackButton={false}
-                showLoginButton={false}/>
+                showLoginButton={false}
+                showHomeButton={false}/>
             <Box sx={{
                 flex: 1,
                 display: "flex",
