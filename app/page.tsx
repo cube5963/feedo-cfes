@@ -279,7 +279,7 @@ export default function Home() {
         {
             name: 'T　Yさん',
             company: 'バックエンド・インフラを担当',
-            comment: '科技高とかＪ科を死亡した理由とか。',
+            comment: '',
         },
         {
             name: 'U　Iさん',
